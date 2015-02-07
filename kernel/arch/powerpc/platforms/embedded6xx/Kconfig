@@ -1,0 +1,123 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config EMBEDDED6xx
+	bool "Embedded 6xx/7xx/7xxx-based boards"
+	depends on PPC32 && BROKEN_ON_SMP && PPC_MULTIPLATFORM
+
+config LINKSTATION
+	bool "Linkstation / Kurobox(HG) from Buffalo"
+	depends on EMBEDDED6xx
+	select MPIC
+	select FSL_SOC
+	select PPC_UDBG_16550 if SERIAL_8250
+	select DEFAULT_UIMAGE
+	select MPC10X_OPENPIC
+	select MPC10X_BRIDGE
+	help
+	  Select LINKSTATION if configuring for one of PPC- (MPC8241)
+	  based NAS systems from Buffalo Technology. So far only
+	  KuroboxHG has been tested. In the future classical Kurobox,
+	  Linkstation-I HD-HLAN and HD-HGLAN versions, and PPC-based
+	  Terastation systems should be supported too.
+
+config STORCENTER
+	bool "IOMEGA StorCenter"
+	depends on EMBEDDED6xx
+	select MPIC
+	select FSL_SOC
+	select PPC_UDBG_16550 if SERIAL_8250
+	select MPC10X_OPENPIC
+	select MPC10X_BRIDGE
+	help
+	  Select STORCENTER if configuring for the iomega StorCenter
+	  with an 8241 CPU in it.
+
+config MPC7448HPC2
+	bool "Freescale MPC7448HPC2(Taiga)"
+	depends on EMBEDDED6xx
+	select TSI108_BRIDGE
+	select DEFAULT_UIMAGE
+	select PPC_UDBG_16550
+	select TSI108_BRIDGE
+	help
+	  Select MPC7448HPC2 if configuring for Freescale MPC7448HPC2 (Taiga)
+	  platform
+
+config PPC_HOLLY
+	bool "PPC750GX/CL with TSI10x bridge (Hickory/Holly)"
+	depends on EMBEDDED6xx
+	select TSI108_BRIDGE
+	select PPC_UDBG_16550
+	select TSI108_BRIDGE
+	help
+	  Select PPC_HOLLY if configuring for an IBM 750GX/CL Eval
+	  Board with TSI108/9 bridge (Hickory/Holly)
+
+config PPC_PRPMC2800
+	bool "Motorola-PrPMC2800"
+	depends on EMBEDDED6xx
+	select MV64X60
+	select NOT_COHERENT_CACHE
+	help
+	  This option enables support for the Motorola PrPMC2800 board
+
+config PPC_C2K
+	bool "SBS/GEFanuc C2K board"
+	depends on EMBEDDED6xx
+	select MV64X60
+	select NOT_COHERENT_CACHE
+	select MTD_CFI_I4
+	help
+	  This option enables support for the GE Fanuc C2K board (formerly
+	  an SBS board).
+
+config TSI108_BRIDGE
+	bool
+	select PCI
+	select MPIC
+	select MPIC_WEIRD
+
+config MPC10X_BRIDGE
+	bool
+	select PPC_INDIRECT_PCI
+
+config MV64X60
+	bool
+	select PPC_INDIRECT_PCI
+	select CHECK_CACHE_COHERENCY
+
+config MPC10X_OPENPIC
+	bool
+
+config MPC10X_STORE_GATHERING
+	bool "Enable MPC10x store gathering"
+	depends on MPC10X_BRIDGE

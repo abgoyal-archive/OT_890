@@ -1,0 +1,93 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# DVB device configuration
+#
+
+config DVB_DYNAMIC_MINORS
+	bool "Dynamic DVB minor allocation"
+	depends on DVB_CORE
+	default n
+	help
+	  If you say Y here, the DVB subsystem will use dynamic minor
+	  allocation for any device that uses the DVB major number.
+	  This means that you can have more than 4 of a single type
+	  of device (like demuxes and frontends) per adapter, but udev
+	  will be required to manage the device nodes.
+
+	  If you are unsure about this, say N here.
+
+menuconfig DVB_CAPTURE_DRIVERS
+	bool "DVB/ATSC adapters"
+	depends on DVB_CORE
+	default y
+	---help---
+	  Say Y to select Digital TV adapters
+
+if DVB_CAPTURE_DRIVERS && DVB_CORE
+
+comment "Supported SAA7146 based PCI Adapters"
+	depends on DVB_CORE && PCI && I2C
+source "drivers/media/dvb/ttpci/Kconfig"
+
+comment "Supported USB Adapters"
+	depends on DVB_CORE && USB && I2C
+source "drivers/media/dvb/dvb-usb/Kconfig"
+source "drivers/media/dvb/ttusb-budget/Kconfig"
+source "drivers/media/dvb/ttusb-dec/Kconfig"
+source "drivers/media/dvb/siano/Kconfig"
+
+comment "Supported FlexCopII (B2C2) Adapters"
+	depends on DVB_CORE && (PCI || USB) && I2C
+source "drivers/media/dvb/b2c2/Kconfig"
+
+comment "Supported BT878 Adapters"
+	depends on DVB_CORE && PCI && I2C
+source "drivers/media/dvb/bt8xx/Kconfig"
+
+comment "Supported Pluto2 Adapters"
+	depends on DVB_CORE && PCI && I2C
+source "drivers/media/dvb/pluto2/Kconfig"
+
+comment "Supported SDMC DM1105 Adapters"
+	depends on DVB_CORE && PCI && I2C
+source "drivers/media/dvb/dm1105/Kconfig"
+
+comment "Supported FireWire (IEEE 1394) Adapters"
+	depends on DVB_CORE && IEEE1394
+source "drivers/media/dvb/firewire/Kconfig"
+
+comment "Supported DVB Frontends"
+	depends on DVB_CORE
+source "drivers/media/dvb/frontends/Kconfig"
+
+endif # DVB_CAPTURE_DRIVERS

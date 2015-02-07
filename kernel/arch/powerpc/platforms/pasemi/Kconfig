@@ -1,0 +1,71 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config PPC_PASEMI
+	depends on PPC_MULTIPLATFORM && PPC64
+	bool "PA Semi SoC-based platforms"
+	default n
+	select MPIC
+	select PCI
+	select PPC_UDBG_16550
+	select PPC_NATIVE
+	select MPIC_BROKEN_REGREAD
+	help
+	  This option enables support for PA Semi's PWRficient line
+	  of SoC processors, including PA6T-1682M
+
+menu "PA Semi PWRficient options"
+	depends on PPC_PASEMI
+
+config PPC_PASEMI_IOMMU
+	bool "PA Semi IOMMU support"
+	depends on PPC_PASEMI
+	help
+	  IOMMU support for PA Semi PWRficient
+
+config PPC_PASEMI_IOMMU_DMA_FORCE
+	bool "Force DMA engine to use IOMMU"
+	depends on PPC_PASEMI_IOMMU
+	help
+	  This option forces the use of the IOMMU also for the
+	  DMA engine. Otherwise the kernel will use it only when
+	  running under a hypervisor.
+
+	  If in doubt, say "N".
+
+config PPC_PASEMI_MDIO
+	depends on PHYLIB
+	tristate "MDIO support via GPIO"
+	default y
+	help
+	  Driver for MDIO via GPIO on PWRficient platforms
+
+endmenu

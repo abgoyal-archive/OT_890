@@ -1,0 +1,74 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config XEN_BALLOON
+	bool "Xen memory balloon driver"
+	depends on XEN
+	default y
+	help
+	  The balloon driver allows the Xen domain to request more memory from
+	  the system to expand the domain's memory allocation, or alternatively
+	  return unneeded memory to the system.
+
+config XEN_SCRUB_PAGES
+	bool "Scrub pages before returning them to system"
+	depends on XEN_BALLOON
+	default y
+	help
+	  Scrub pages before returning them to the system for reuse by
+	  other domains.  This makes sure that any confidential data
+	  is not accidentally visible to other domains.  Is it more
+	  secure, but slightly less efficient.
+	  If in doubt, say yes.
+
+config XENFS
+	tristate "Xen filesystem"
+	depends on XEN
+	default y
+	help
+	  The xen filesystem provides a way for domains to share
+	  information with each other and with the hypervisor.
+	  For example, by reading and writing the "xenbus" file, guests
+	  may pass arbitrary information to the initial domain.
+	  If in doubt, say yes.
+
+config XEN_COMPAT_XENFS
+       bool "Create compatibility mount point /proc/xen"
+       depends on XENFS
+       default y
+       help
+         The old xenstore userspace tools expect to find "xenbus"
+         under /proc/xen, but "xenbus" is now found at the root of the
+         xenfs filesystem.  Selecting this causes the kernel to create
+         the compatibilty mount point /proc/xen if it is running on
+         a xen platform.
+         If in doubt, say yes.
+

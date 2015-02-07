@@ -1,0 +1,96 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Acorn Network device configuration
+#  These are for Acorn's Expansion card network interfaces
+#
+config ARM_AM79C961A
+	bool "ARM EBSA110 AM79C961A support"
+	depends on ARM && ARCH_EBSA110
+	select CRC32
+	help
+	  If you wish to compile a kernel for the EBSA-110, then you should
+	  always answer Y to this.
+
+config ARM_ETHER1
+	tristate "Acorn Ether1 support"
+	depends on ARM && ARCH_ACORN
+	help
+	  If you have an Acorn system with one of these (AKA25) network cards,
+	  you should say Y to this option if you wish to use it with Linux.
+
+config ARM_ETHER3
+	tristate "Acorn/ANT Ether3 support"
+	depends on ARM && ARCH_ACORN
+	help
+	  If you have an Acorn system with one of these network cards, you
+	  should say Y to this option if you wish to use it with Linux.
+
+config ARM_ETHERH
+	tristate "I-cubed EtherH/ANT EtherM support"
+	depends on ARM && ARCH_ACORN
+	select CRC32
+	help
+	  If you have an Acorn system with one of these network cards, you
+	  should say Y to this option if you wish to use it with Linux.
+
+config ARM_AT91_ETHER
+	tristate "AT91RM9200 Ethernet support"
+	depends on ARM && ARCH_AT91RM9200
+	select MII
+	help
+	  If you wish to compile a kernel for the AT91RM9200 and enable
+	  ethernet support, then you should always answer Y to this.
+
+config ARM_KS8695_ETHER
+	tristate "KS8695 Ethernet support"
+	depends on ARM && ARCH_KS8695
+	select MII
+	help
+	  If you wish to compile a kernel for the KS8695 and want to
+	  use the internal ethernet then you should answer Y to this.
+
+config EP93XX_ETH
+	tristate "EP93xx Ethernet support"
+	depends on ARM && ARCH_EP93XX
+	select MII
+	help
+	  This is a driver for the ethernet hardware included in EP93xx CPUs.
+	  Say Y if you are building a kernel for EP93xx based devices.
+
+config IXP4XX_ETH
+	tristate "Intel IXP4xx Ethernet support"
+	depends on ARM && ARCH_IXP4XX && IXP4XX_NPE && IXP4XX_QMGR
+	select PHYLIB
+	help
+	  Say Y here if you want to use built-in Ethernet ports
+	  on IXP4xx processor.

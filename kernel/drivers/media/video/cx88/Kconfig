@@ -1,0 +1,116 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config VIDEO_CX88
+	tristate "Conexant 2388x (bt878 successor) support"
+	depends on VIDEO_DEV && PCI && I2C && INPUT
+	select I2C_ALGOBIT
+	select VIDEO_BTCX
+	select VIDEOBUF_DMA_SG
+	select VIDEO_TUNER
+	select VIDEO_TVEEPROM
+	select VIDEO_IR
+	select VIDEO_WM8775 if VIDEO_HELPER_CHIPS_AUTO
+	---help---
+	  This is a video4linux driver for Conexant 2388x based
+	  TV cards.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cx8800
+
+config VIDEO_CX88_ALSA
+	tristate "Conexant 2388x DMA audio support"
+	depends on VIDEO_CX88 && SND && EXPERIMENTAL
+	select SND_PCM
+	---help---
+	  This is a video4linux driver for direct (DMA) audio on
+	  Conexant 2388x based TV cards using ALSA.
+
+	  It only works with boards with function 01 enabled.
+	  To check if your board supports, use lspci -n.
+	  If supported, you should see 14f1:8801 or 14f1:8811
+	  PCI device.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cx88-alsa.
+
+config VIDEO_CX88_BLACKBIRD
+	tristate "Blackbird MPEG encoder support (cx2388x + cx23416)"
+	depends on VIDEO_CX88
+	select VIDEO_CX2341X
+	---help---
+	  This adds support for MPEG encoder cards based on the
+	  Blackbird reference design, using the Conexant 2388x
+	  and 23416 chips.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cx88-blackbird.
+
+config VIDEO_CX88_DVB
+	tristate "DVB/ATSC Support for cx2388x based TV cards"
+	depends on VIDEO_CX88 && DVB_CORE
+	select VIDEOBUF_DVB
+	select DVB_PLL if !DVB_FE_CUSTOMISE
+	select DVB_MT352 if !DVB_FE_CUSTOMISE
+	select DVB_ZL10353 if !DVB_FE_CUSTOMISE
+	select DVB_OR51132 if !DVB_FE_CUSTOMISE
+	select DVB_CX22702 if !DVB_FE_CUSTOMISE
+	select DVB_LGDT330X if !DVB_FE_CUSTOMISE
+	select DVB_NXT200X if !DVB_FE_CUSTOMISE
+	select DVB_CX24123 if !DVB_FE_CUSTOMISE
+	select DVB_ISL6421 if !DVB_FE_CUSTOMISE
+	select DVB_S5H1411 if !DVB_FE_CUSTOMISE
+	select DVB_CX24116 if !DVB_FE_CUSTOMISE
+	select DVB_STV0299 if !DVB_FE_CUSTOMISE
+	select DVB_STV0288 if !DVB_FE_CUSTOMISE
+	select DVB_STB6000 if !DVB_FE_CUSTOMISE
+	select MEDIA_TUNER_SIMPLE if !MEDIA_TUNER_CUSTOMIZE
+	---help---
+	  This adds support for DVB/ATSC cards based on the
+	  Conexant 2388x chip.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cx88-dvb.
+
+config VIDEO_CX88_MPEG
+	tristate
+	depends on VIDEO_CX88_DVB || VIDEO_CX88_BLACKBIRD
+	default y
+
+config VIDEO_CX88_VP3054
+	tristate "VP-3054 Secondary I2C Bus Support"
+	default m
+	depends on VIDEO_CX88_DVB && DVB_MT352
+	---help---
+	  This adds DVB-T support for cards based on the
+	  Conexant 2388x chip and the MT352 demodulator,
+	  which also require support for the VP-3054
+	  Secondary I2C bus, such at DNTV Live! DVB-T Pro.

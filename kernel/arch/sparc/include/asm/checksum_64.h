@@ -1,0 +1,198 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+#ifndef __SPARC64_CHECKSUM_H
+#define __SPARC64_CHECKSUM_H
+
+/*  checksum.h:  IP/UDP/TCP checksum routines on the V9.
+ *
+ *  Copyright(C) 1995 Linus Torvalds
+ *  Copyright(C) 1995 Miguel de Icaza
+ *  Copyright(C) 1996 David S. Miller
+ *  Copyright(C) 1996 Eddie C. Dost
+ *  Copyright(C) 1997 Jakub Jelinek
+ *
+ * derived from:
+ *	Alpha checksum c-code
+ *      ix86 inline assembly
+ *      RFC1071 Computing the Internet Checksum
+ */
+
+#include <linux/in6.h>
+#include <asm/uaccess.h>
+
+/* computes the checksum of a memory block at buff, length len,
+ * and adds in "sum" (32-bit)
+ *
+ * returns a 32-bit number suitable for feeding into itself
+ * or csum_tcpudp_magic
+ *
+ * this function must be called with even lengths, except
+ * for the last fragment, which may be odd
+ *
+ * it's best to have buff aligned on a 32-bit boundary
+ */
+extern __wsum csum_partial(const void * buff, int len, __wsum sum);
+
+/* the same as csum_partial, but copies from user space while it
+ * checksums
+ *
+ * here even more important to align src and dst on a 32-bit (or even
+ * better 64-bit) boundary
+ */
+extern __wsum csum_partial_copy_nocheck(const void *src, void *dst,
+					      int len, __wsum sum);
+
+extern long __csum_partial_copy_from_user(const void __user *src,
+					  void *dst, int len,
+					  __wsum sum);
+
+static inline __wsum
+csum_partial_copy_from_user(const void __user *src,
+			    void *dst, int len,
+			    __wsum sum, int *err)
+{
+	long ret = __csum_partial_copy_from_user(src, dst, len, sum);
+	if (ret < 0)
+		*err = -EFAULT;
+	return (__force __wsum) ret;
+}
+
+/*
+ *	Copy and checksum to user
+ */
+#define HAVE_CSUM_COPY_USER
+extern long __csum_partial_copy_to_user(const void *src,
+					void __user *dst, int len,
+					  __wsum sum);
+
+static inline __wsum
+csum_and_copy_to_user(const void *src,
+		      void __user *dst, int len,
+		      __wsum sum, int *err)
+{
+	long ret = __csum_partial_copy_to_user(src, dst, len, sum);
+	if (ret < 0)
+		*err = -EFAULT;
+	return (__force __wsum) ret;
+}
+
+/* ihl is always 5 or greater, almost always is 5, and iph is word aligned
+ * the majority of the time.
+ */
+extern __sum16 ip_fast_csum(const void *iph, unsigned int ihl);
+
+/* Fold a partial checksum without adding pseudo headers. */
+static inline __sum16 csum_fold(__wsum sum)
+{
+	unsigned int tmp;
+
+	__asm__ __volatile__(
+"	addcc		%0, %1, %1\n"
+"	srl		%1, 16, %1\n"
+"	addc		%1, %%g0, %1\n"
+"	xnor		%%g0, %1, %0\n"
+	: "=&r" (sum), "=r" (tmp)
+	: "0" (sum), "1" ((__force u32)sum<<16)
+	: "cc");
+	return (__force __sum16)sum;
+}
+
+static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+					       unsigned int len,
+					       unsigned short proto,
+					       __wsum sum)
+{
+	__asm__ __volatile__(
+"	addcc		%1, %0, %0\n"
+"	addccc		%2, %0, %0\n"
+"	addccc		%3, %0, %0\n"
+"	addc		%0, %%g0, %0\n"
+	: "=r" (sum), "=r" (saddr)
+	: "r" (daddr), "r" (proto + len), "0" (sum), "1" (saddr)
+	: "cc");
+	return sum;
+}
+
+/*
+ * computes the checksum of the TCP/UDP pseudo-header
+ * returns a 16-bit checksum, already complemented
+ */
+static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr,
+						   unsigned short len,
+						   unsigned short proto,
+						   __wsum sum)
+{
+	return csum_fold(csum_tcpudp_nofold(saddr,daddr,len,proto,sum));
+}
+
+#define _HAVE_ARCH_IPV6_CSUM
+
+static inline __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+				      const struct in6_addr *daddr,
+				      __u32 len, unsigned short proto,
+				      __wsum sum)
+{
+	__asm__ __volatile__ (
+"	addcc		%3, %4, %%g7\n"
+"	addccc		%5, %%g7, %%g7\n"
+"	lduw		[%2 + 0x0c], %%g2\n"
+"	lduw		[%2 + 0x08], %%g3\n"
+"	addccc		%%g2, %%g7, %%g7\n"
+"	lduw		[%2 + 0x04], %%g2\n"
+"	addccc		%%g3, %%g7, %%g7\n"
+"	lduw		[%2 + 0x00], %%g3\n"
+"	addccc		%%g2, %%g7, %%g7\n"
+"	lduw		[%1 + 0x0c], %%g2\n"
+"	addccc		%%g3, %%g7, %%g7\n"
+"	lduw		[%1 + 0x08], %%g3\n"
+"	addccc		%%g2, %%g7, %%g7\n"
+"	lduw		[%1 + 0x04], %%g2\n"
+"	addccc		%%g3, %%g7, %%g7\n"
+"	lduw		[%1 + 0x00], %%g3\n"
+"	addccc		%%g2, %%g7, %%g7\n"
+"	addccc		%%g3, %%g7, %0\n"
+"	addc		0, %0, %0\n"
+	: "=&r" (sum)
+	: "r" (saddr), "r" (daddr), "r"(htonl(len)),
+	  "r"(htonl(proto)), "r"(sum)
+	: "g2", "g3", "g7", "cc");
+
+	return csum_fold(sum);
+}
+
+/* this routine is used for miscellaneous IP-like checksums, mainly in icmp.c */
+static inline __sum16 ip_compute_csum(const void *buff, int len)
+{
+	return csum_fold(csum_partial(buff, len, 0));
+}
+
+#endif /* !(__SPARC64_CHECKSUM_H) */

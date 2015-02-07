@@ -1,0 +1,90 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config PPC_86xx
+menuconfig PPC_86xx
+	bool "86xx-based boards"
+	depends on 6xx && PPC_MULTIPLATFORM
+	select FSL_SOC
+	select ALTIVEC
+	help
+	  The Freescale E600 SoCs have 74xx cores.
+
+if PPC_86xx
+
+config MPC8641_HPCN
+	bool "Freescale MPC8641 HPCN"
+	select PPC_I8259
+	select DEFAULT_UIMAGE
+	select FSL_ULI1575
+	select HAS_RAPIDIO
+	help
+	  This option enables support for the MPC8641 HPCN board.
+
+config SBC8641D
+	bool "Wind River SBC8641D"
+	select DEFAULT_UIMAGE
+	help
+	  This option enables support for the WRS SBC8641D board.
+
+config MPC8610_HPCD
+	bool "Freescale MPC8610 HPCD"
+	select DEFAULT_UIMAGE
+	select FSL_ULI1575
+	help
+	  This option enables support for the MPC8610 HPCD board.
+
+config GEF_SBC610
+	bool "GE Fanuc SBC610"
+	select DEFAULT_UIMAGE
+	select GENERIC_GPIO
+	select ARCH_REQUIRE_GPIOLIB
+	select HAS_RAPIDIO
+	help
+	  This option enables support for GE Fanuc's SBC610.
+
+endif
+
+config MPC8641
+	bool
+	select PPC_PCI_CHOICE
+	select FSL_PCI if PCI
+	select PPC_UDBG_16550
+	select MPIC
+	default y if MPC8641_HPCN || SBC8641D || GEF_SBC610
+
+config MPC8610
+	bool
+	select PPC_PCI_CHOICE
+	select FSL_PCI if PCI
+	select PPC_UDBG_16550
+	select MPIC
+	default y if MPC8610_HPCD

@@ -1,0 +1,159 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Meilhaus configuration
+#
+
+menuconfig MEILHAUS
+	tristate "Meilhaus support"
+	depends on m
+	---help---
+	  If you have a Meilhaus card, say Y (or M) here.
+
+	  You need both this driver, and the driver for the particular
+	  data collection card.
+
+	  To compile this driver as a module, choose M here. The module will
+	  be called memain.
+
+if MEILHAUS
+
+config ME0600
+	tristate "Meilhaus ME-600 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-600 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me0600.
+
+config ME0900
+	tristate "Meilhaus ME-900 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-900 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me0900.
+
+config ME1000
+	tristate "Meilhaus ME-1000 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-1000 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me1000.
+
+config ME1400
+	tristate "Meilhaus ME-1400 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-1400 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me1400.
+
+config ME1600
+	tristate "Meilhaus ME-1600 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-1600 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me1600.
+
+config ME4600
+	tristate "Meilhaus ME-4600 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-4600 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me4600.
+
+config ME6000
+	tristate "Meilhaus ME-6000 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-6000 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me6000.
+
+config ME8100
+	tristate "Meilhaus ME-8100 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-8100 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me8100.
+
+config ME8200
+	tristate "Meilhaus ME-8200 support"
+	default n
+	depends on PCI && m
+	help
+	  This driver supports the Meilhaus ME-8200 family of boards
+	  that do data collection and multipurpose I/O.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called me8200.
+
+config MEDUMMY
+	tristate "Meilhaus dummy driver"
+	default n
+	depends on PCI && m
+	help
+	  This provides a dummy driver for the Meilhaus driver package
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called medummy.
+
+endif # MEILHAUS

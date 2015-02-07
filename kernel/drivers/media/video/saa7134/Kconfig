@@ -1,0 +1,76 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config VIDEO_SAA7134
+	tristate "Philips SAA7134 support"
+	depends on VIDEO_DEV && PCI && I2C && INPUT
+	select VIDEOBUF_DMA_SG
+	select VIDEO_IR
+	select VIDEO_TUNER
+	select VIDEO_TVEEPROM
+	select CRC32
+	---help---
+	  This is a video4linux driver for Philips SAA713x based
+	  TV cards.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called saa7134.
+
+config VIDEO_SAA7134_ALSA
+	tristate "Philips SAA7134 DMA audio support"
+	depends on VIDEO_SAA7134 && SND
+	select SND_PCM
+	---help---
+	  This is a video4linux driver for direct (DMA) audio in
+	  Philips SAA713x based TV cards using ALSA
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called saa7134-alsa.
+
+config VIDEO_SAA7134_DVB
+	tristate "DVB/ATSC Support for saa7134 based TV cards"
+	depends on VIDEO_SAA7134 && DVB_CORE
+	select VIDEOBUF_DVB
+	select DVB_PLL if !DVB_FE_CUSTOMISE
+	select DVB_MT352 if !DVB_FE_CUSTOMISE
+	select DVB_TDA1004X if !DVB_FE_CUSTOMISE
+	select DVB_NXT200X if !DVB_FE_CUSTOMISE
+	select DVB_TDA10086 if !DVB_FE_CUSTOMISE
+	select DVB_TDA826X if !DVB_FE_CUSTOMISE
+	select DVB_ISL6421 if !DVB_FE_CUSTOMISE
+	select MEDIA_TUNER_TDA827X if !MEDIA_TUNER_CUSTOMIZE
+	select MEDIA_TUNER_SIMPLE if !MEDIA_TUNER_CUSTOMIZE
+	---help---
+	  This adds support for DVB cards based on the
+	  Philips saa7134 chip.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called saa7134-dvb.

@@ -1,0 +1,93 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+# arch/arm/mach-s3c6410/Kconfig
+#
+# Copyright 2008 Openmoko, Inc.
+# Copyright 2008 Simtec Electronics
+#
+# Licensed under GPLv2
+
+# Configuration options for the S3C6410 CPU
+
+config CPU_S3C6410
+	bool
+	select CPU_S3C6400_INIT
+	select CPU_S3C6400_CLOCK
+	help
+	  Enable S3C6410 CPU support
+
+config S3C6410_SETUP_SDHCI
+	bool
+	help
+	  Internal helper functions for S3C6410 based SDHCI systems
+
+config MACH_SMDK6410
+	bool "SMDK6410"
+	select CPU_S3C6410
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1
+	select S3C_DEV_I2C1
+	select S3C_DEV_FB
+	select S3C6410_SETUP_SDHCI
+	select S3C64XX_SETUP_I2C1
+	select S3C64XX_SETUP_FB_24BPP
+	help
+	  Machine support for the Samsung SMDK6410
+
+# At least some of the SMDK6410s were shipped with the card detect
+# for the MMC/SD slots connected to the same input. This means that
+# either the boards need to be altered to have channel0 to an alternate
+# configuration or that only one slot can be used.
+
+choice
+	prompt "SMDK6410 MMC/SD slot setup"
+	depends on MACH_SMDK6410
+
+config SMDK6410_SD_CH0
+	bool "Use channel 0 only"
+	depends on MACH_SMDK6410
+	help
+          Select CON7 (channel 0) as the MMC/SD slot, as
+	  at least some SMDK6410 boards come with the
+	  resistors fitted so that the card detects for
+	  channels 0 and 1 are the same.
+       
+config SMDK6410_SD_CH1
+	bool "Use channel 1 only"
+	depends on MACH_SMDK6410
+	help
+          Select CON6 (channel 1) as the MMC/SD slot, as
+	  at least some SMDK6410 boards come with the
+	  resistors fitted so that the card detects for
+	  channels 0 and 1 are the same.
+
+endchoice

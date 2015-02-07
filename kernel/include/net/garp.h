@@ -1,0 +1,159 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+#ifndef _NET_GARP_H
+#define _NET_GARP_H
+
+#include <net/stp.h>
+
+#define GARP_PROTOCOL_ID	0x1
+#define GARP_END_MARK		0x0
+
+struct garp_pdu_hdr {
+	__be16	protocol;
+};
+
+struct garp_msg_hdr {
+	u8	attrtype;
+};
+
+enum garp_attr_event {
+	GARP_LEAVE_ALL,
+	GARP_JOIN_EMPTY,
+	GARP_JOIN_IN,
+	GARP_LEAVE_EMPTY,
+	GARP_LEAVE_IN,
+	GARP_EMPTY,
+};
+
+struct garp_attr_hdr {
+	u8	len;
+	u8	event;
+	u8	data[];
+};
+
+struct garp_skb_cb {
+	u8	cur_type;
+};
+
+static inline struct garp_skb_cb *garp_cb(struct sk_buff *skb)
+{
+	BUILD_BUG_ON(sizeof(struct garp_skb_cb) >
+		     FIELD_SIZEOF(struct sk_buff, cb));
+	return (struct garp_skb_cb *)skb->cb;
+}
+
+enum garp_applicant_state {
+	GARP_APPLICANT_INVALID,
+	GARP_APPLICANT_VA,
+	GARP_APPLICANT_AA,
+	GARP_APPLICANT_QA,
+	GARP_APPLICANT_LA,
+	GARP_APPLICANT_VP,
+	GARP_APPLICANT_AP,
+	GARP_APPLICANT_QP,
+	GARP_APPLICANT_VO,
+	GARP_APPLICANT_AO,
+	GARP_APPLICANT_QO,
+	__GARP_APPLICANT_MAX
+};
+#define GARP_APPLICANT_MAX	(__GARP_APPLICANT_MAX - 1)
+
+enum garp_event {
+	GARP_EVENT_REQ_JOIN,
+	GARP_EVENT_REQ_LEAVE,
+	GARP_EVENT_R_JOIN_IN,
+	GARP_EVENT_R_JOIN_EMPTY,
+	GARP_EVENT_R_EMPTY,
+	GARP_EVENT_R_LEAVE_IN,
+	GARP_EVENT_R_LEAVE_EMPTY,
+	GARP_EVENT_TRANSMIT_PDU,
+	__GARP_EVENT_MAX
+};
+#define GARP_EVENT_MAX		(__GARP_EVENT_MAX - 1)
+
+enum garp_action {
+	GARP_ACTION_NONE,
+	GARP_ACTION_S_JOIN_IN,
+	GARP_ACTION_S_LEAVE_EMPTY,
+};
+
+struct garp_attr {
+	struct rb_node			node;
+	enum garp_applicant_state	state;
+	u8				type;
+	u8				dlen;
+	unsigned char			data[];
+};
+
+enum garp_applications {
+	GARP_APPLICATION_GVRP,
+	__GARP_APPLICATION_MAX
+};
+#define GARP_APPLICATION_MAX	(__GARP_APPLICATION_MAX - 1)
+
+struct garp_application {
+	enum garp_applications	type;
+	unsigned int		maxattr;
+	struct stp_proto	proto;
+};
+
+struct garp_applicant {
+	struct garp_application	*app;
+	struct net_device	*dev;
+	struct timer_list	join_timer;
+
+	spinlock_t		lock;
+	struct sk_buff_head	queue;
+	struct sk_buff		*pdu;
+	struct rb_root		gid;
+};
+
+struct garp_port {
+	struct garp_applicant	*applicants[GARP_APPLICATION_MAX + 1];
+};
+
+extern int	garp_register_application(struct garp_application *app);
+extern void	garp_unregister_application(struct garp_application *app);
+
+extern int	garp_init_applicant(struct net_device *dev,
+				    struct garp_application *app);
+extern void	garp_uninit_applicant(struct net_device *dev,
+				      struct garp_application *app);
+
+extern int	garp_request_join(const struct net_device *dev,
+				  const struct garp_application *app,
+				  const void *data, u8 len, u8 type);
+extern void	garp_request_leave(const struct net_device *dev,
+				   const struct garp_application *app,
+				   const void *data, u8 len, u8 type);
+
+#endif /* _NET_GARP_H */

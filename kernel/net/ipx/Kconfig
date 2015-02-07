@@ -1,0 +1,91 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# IPX configuration
+#
+config IPX
+	tristate "The IPX protocol"
+	select LLC
+	---help---
+	  This is support for the Novell networking protocol, IPX, commonly
+	  used for local networks of Windows machines.  You need it if you
+	  want to access Novell NetWare file or print servers using the Linux
+	  Novell client ncpfs (available from
+	  <ftp://platan.vc.cvut.cz/pub/linux/ncpfs/>) or from
+	  within the Linux DOS emulator DOSEMU (read the DOSEMU-HOWTO,
+	  available from <http://www.tldp.org/docs.html#howto>).  In order
+	  to do the former, you'll also have to say Y to "NCP file system
+	  support", below.
+
+	  IPX is similar in scope to IP, while SPX, which runs on top of IPX,
+	  is similar to TCP.
+
+	  To turn your Linux box into a fully featured NetWare file server and
+	  IPX router, say Y here and fetch either lwared from
+	  <ftp://ibiblio.org/pub/Linux/system/network/daemons/> or
+	  mars_nwe from <ftp://www.compu-art.de/mars_nwe/>. For more
+	  information, read the IPX-HOWTO available from
+	  <http://www.tldp.org/docs.html#howto>.
+
+	  The IPX driver would enlarge your kernel by about 16 KB. To compile
+	  this driver as a module, choose M here: the module will be called ipx.
+	  Unless you want to integrate your Linux box with a local Novell
+	  network, say N.
+
+config IPX_INTERN
+	bool "IPX: Full internal IPX network"
+	depends on IPX
+	---help---
+	  Every IPX network has an address that identifies it. Sometimes it is
+	  useful to give an IPX "network" address to your Linux box as well
+	  (for example if your box is acting as a file server for different
+	  IPX networks: it will then be accessible from everywhere using the
+	  same address). The way this is done is to create a virtual internal
+	  "network" inside your box and to assign an IPX address to this
+	  network. Say Y here if you want to do this; read the IPX-HOWTO at
+	  <http://www.tldp.org/docs.html#howto> for details.
+
+	  The full internal IPX network enables you to allocate sockets on
+	  different virtual nodes of the internal network. This is done by
+	  evaluating the field sipx_node of the socket address given to the
+	  bind call. So applications should always initialize the node field
+	  to 0 when binding a socket on the primary network. In this case the
+	  socket is assigned the default node that has been given to the
+	  kernel when the internal network was created. By enabling the full
+	  internal IPX network the cross-forwarding of packets targeted at
+	  'special' sockets to sockets listening on the primary network is
+	  disabled. This might break existing applications, especially RIP/SAP
+	  daemons. A RIP/SAP daemon that works well with the full internal net
+	  can be found on <ftp://ftp.gwdg.de/pub/linux/misc/ncpfs/>.
+
+	  If you don't know what you are doing, say N.
+

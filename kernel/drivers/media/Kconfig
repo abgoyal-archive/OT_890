@@ -1,0 +1,170 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Multimedia device configuration
+#
+
+menu "Multimedia devices"
+	depends on HAS_IOMEM
+
+comment "Multimedia core support"
+
+#
+# V4L core and enabled API's
+#
+
+config VIDEO_DEV
+	tristate "Video For Linux"
+	---help---
+	  V4L core support for video capture and overlay devices, webcams and
+	  AM/FM radio cards.
+
+	  This kernel includes support for the new Video for Linux Two API,
+	  (V4L2).
+
+	  Additional info and docs are available on the web at
+	  <http://linuxtv.org>
+
+	  Documentation for V4L2 is also available on the web at
+	  <http://bytesex.org/v4l/>.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called videodev.
+
+config VIDEO_V4L2_COMMON
+	tristate
+	depends on (I2C || I2C=n) && VIDEO_DEV
+	default (I2C || I2C=n) && VIDEO_DEV
+
+config VIDEO_ALLOW_V4L1
+	bool "Enable Video For Linux API 1 (DEPRECATED)"
+	depends on VIDEO_DEV && VIDEO_V4L2_COMMON
+	default VIDEO_DEV && VIDEO_V4L2_COMMON
+	---help---
+	  Enables drivers based on the legacy V4L1 API.
+
+	  This api were developed to be used at Kernel 2.2 and 2.4, but
+	  lacks support for several video standards. There are several
+	  drivers at kernel that still depends on it.
+
+	  If you are unsure as to whether this is required, answer Y.
+
+config VIDEO_V4L1_COMPAT
+	bool "Enable Video For Linux API 1 compatible Layer" if !VIDEO_ALLOW_V4L1
+	depends on VIDEO_DEV
+	default y
+	---help---
+	  Enables a compatibility API used by most V4L2 devices to allow
+	  its usage with legacy applications that supports only V4L1 api.
+
+	  Documentation for the original API is included in the file
+	  <Documentation/video4linux/API.html>.
+
+	  User tools for this are available from
+	  <ftp://ftp.uk.linux.org/pub/linux/video4linux/>.
+
+	  If you are unsure as to whether this is required, answer Y.
+
+#
+# DVB Core
+#
+
+config DVB_CORE
+	tristate "DVB for Linux"
+	depends on NET && INET
+	select CRC32
+	help
+	  DVB core utility functions for device handling, software fallbacks etc.
+
+	  Enable this if you own a DVB/ATSC adapter and want to use it or if
+	  you compile Linux for a digital SetTopBox.
+
+	  Say Y when you have a DVB or an ATSC card and want to use it.
+
+	  API specs and user tools are available from <http://www.linuxtv.org/>.
+
+	  Please report problems regarding this support to the LinuxDVB
+	  mailing list.
+
+	  If unsure say N.
+
+config VIDEO_MEDIA
+	tristate
+	default (DVB_CORE && (VIDEO_DEV = n)) || (VIDEO_DEV && (DVB_CORE = n)) || (DVB_CORE && VIDEO_DEV)
+
+comment "Multimedia drivers"
+
+source "drivers/media/common/Kconfig"
+
+#
+# Tuner drivers for DVB and V4L
+#
+
+source "drivers/media/common/tuners/Kconfig"
+
+#
+# Video/Radio/Hybrid adapters
+#
+
+source "drivers/media/video/Kconfig"
+
+source "drivers/media/radio/Kconfig"
+
+#
+# DVB adapters
+#
+
+source "drivers/media/dvb/Kconfig"
+
+config DAB
+	boolean "DAB adapters"
+	---help---
+	  Allow selecting support for for Digital Audio Broadcasting (DAB)
+	  Receiver adapters.
+
+if DAB
+config USB_DABUSB
+	tristate "DABUSB driver"
+	depends on USB
+	---help---
+	  A Digital Audio Broadcasting (DAB) Receiver for USB and Linux
+	  brought to you by the DAB-Team
+	  <http://wwwbode.cs.tum.edu/Par/arch/dab/>.  This driver can be taken
+	  as an example for URB-based bulk, control, and isochronous
+	  transactions. URB's are explained in
+	  <Documentation/usb/URB.txt>.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called dabusb.
+endif # DAB
+
+endmenu

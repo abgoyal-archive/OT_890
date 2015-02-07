@@ -1,0 +1,259 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ *  linux/arch/m32r/platforms/oaks32r/io.c
+ *
+ *  Typical I/O routines for OAKS32R board.
+ *
+ *  Copyright (c) 2001-2005  Hiroyuki Kondo, Hirokazu Takata,
+ *                           Hitoshi Yamamoto, Mamoru Sakugawa
+ */
+
+#include <asm/m32r.h>
+#include <asm/page.h>
+#include <asm/io.h>
+
+#define PORT2ADDR(port)  _port2addr(port)
+
+static inline void *_port2addr(unsigned long port)
+{
+	return (void *)(port | NONCACHE_OFFSET);
+}
+
+static inline  void *_port2addr_ne(unsigned long port)
+{
+	return (void *)((port<<1) + NONCACHE_OFFSET + 0x02000000);
+}
+
+static inline void delay(void)
+{
+	__asm__ __volatile__ ("push r0; \n\t pop r0;" : : :"memory");
+}
+
+/*
+ * NIC I/O function
+ */
+
+#define PORT2ADDR_NE(port)  _port2addr_ne(port)
+
+static inline unsigned char _ne_inb(void *portp)
+{
+	return *(volatile unsigned char *)(portp+1);
+}
+
+static inline unsigned short _ne_inw(void *portp)
+{
+	unsigned short tmp;
+
+	tmp = *(unsigned short *)(portp) & 0xff;
+	tmp |= *(unsigned short *)(portp+2) << 8;
+	return tmp;
+}
+
+static inline  void _ne_insb(void *portp, void *addr, unsigned long count)
+{
+	unsigned char *buf = addr;
+	while (count--)
+		*buf++ = *(volatile unsigned char *)(portp+1);
+}
+
+static inline void _ne_outb(unsigned char b, void *portp)
+{
+	*(volatile unsigned char *)(portp+1) = b;
+}
+
+static inline void _ne_outw(unsigned short w, void *portp)
+{
+	*(volatile unsigned short *)portp =  (w >> 8);
+	*(volatile unsigned short *)(portp+2) =  (w & 0xff);
+}
+
+unsigned char _inb(unsigned long port)
+{
+	if (port >= 0x300 && port < 0x320)
+		return _ne_inb(PORT2ADDR_NE(port));
+
+	return *(volatile unsigned char *)PORT2ADDR(port);
+}
+
+unsigned short _inw(unsigned long port)
+{
+	if (port >= 0x300 && port < 0x320)
+		return _ne_inw(PORT2ADDR_NE(port));
+
+	return *(volatile unsigned short *)PORT2ADDR(port);
+}
+
+unsigned long _inl(unsigned long port)
+{
+	return *(volatile unsigned long *)PORT2ADDR(port);
+}
+
+unsigned char _inb_p(unsigned long port)
+{
+	unsigned char v = _inb(port);
+	delay();
+	return (v);
+}
+
+unsigned short _inw_p(unsigned long port)
+{
+	unsigned short v = _inw(port);
+	delay();
+	return (v);
+}
+
+unsigned long _inl_p(unsigned long port)
+{
+	unsigned long v = _inl(port);
+	delay();
+	return (v);
+}
+
+void _outb(unsigned char b, unsigned long port)
+{
+	if (port >= 0x300 && port < 0x320)
+		_ne_outb(b, PORT2ADDR_NE(port));
+	else
+		*(volatile unsigned char *)PORT2ADDR(port) = b;
+}
+
+void _outw(unsigned short w, unsigned long port)
+{
+	if (port >= 0x300 && port < 0x320)
+		_ne_outw(w, PORT2ADDR_NE(port));
+	else
+		*(volatile unsigned short *)PORT2ADDR(port) = w;
+}
+
+void _outl(unsigned long l, unsigned long port)
+{
+	*(volatile unsigned long *)PORT2ADDR(port) = l;
+}
+
+void _outb_p(unsigned char b, unsigned long port)
+{
+	_outb(b, port);
+	delay();
+}
+
+void _outw_p(unsigned short w, unsigned long port)
+{
+	_outw(w, port);
+	delay();
+}
+
+void _outl_p(unsigned long l, unsigned long port)
+{
+	_outl(l, port);
+	delay();
+}
+
+void _insb(unsigned int port, void *addr, unsigned long count)
+{
+	if (port >= 0x300 && port < 0x320)
+		_ne_insb(PORT2ADDR_NE(port), addr, count);
+	else {
+		unsigned char *buf = addr;
+		unsigned char *portp = PORT2ADDR(port);
+		while (count--)
+			*buf++ = *(volatile unsigned char *)portp;
+	}
+}
+
+void _insw(unsigned int port, void *addr, unsigned long count)
+{
+	unsigned short *buf = addr;
+	unsigned short *portp;
+
+	if (port >= 0x300 && port < 0x320) {
+		portp = PORT2ADDR_NE(port);
+		while (count--)
+			*buf++ = _ne_inw(portp);
+	} else {
+		portp = PORT2ADDR(port);
+		while (count--)
+			*buf++ = *(volatile unsigned short *)portp;
+	}
+}
+
+void _insl(unsigned int port, void *addr, unsigned long count)
+{
+	unsigned long *buf = addr;
+	unsigned long *portp;
+
+	portp = PORT2ADDR(port);
+	while (count--)
+		*buf++ = *(volatile unsigned long *)portp;
+}
+
+void _outsb(unsigned int port, const void *addr, unsigned long count)
+{
+	const unsigned char *buf = addr;
+	unsigned char *portp;
+
+	if (port >= 0x300 && port < 0x320) {
+		portp = PORT2ADDR_NE(port);
+		while (count--)
+			_ne_outb(*buf++, portp);
+	} else {
+		portp = PORT2ADDR(port);
+		while (count--)
+			*(volatile unsigned char *)portp = *buf++;
+	}
+}
+
+void _outsw(unsigned int port, const void *addr, unsigned long count)
+{
+	const unsigned short *buf = addr;
+	unsigned short *portp;
+
+	if (port >= 0x300 && port < 0x320) {
+		portp = PORT2ADDR_NE(port);
+		while (count--)
+			_ne_outw(*buf++, portp);
+	} else {
+		portp = PORT2ADDR(port);
+		while (count--)
+			*(volatile unsigned short *)portp = *buf++;
+	}
+}
+
+void _outsl(unsigned int port, const void *addr, unsigned long count)
+{
+	const unsigned long *buf = addr;
+	unsigned char *portp;
+
+	portp = PORT2ADDR(port);
+	while (count--)
+		*(volatile unsigned long *)portp = *buf++;
+}

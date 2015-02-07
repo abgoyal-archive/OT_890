@@ -1,0 +1,73 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ * arch/arm/mach-l7200/include/mach/gp_timers.h
+ *
+ * Copyright (C) 2000 Steve Hill (sjhill@cotw.com)
+ *
+ * Changelog:
+ *   07-28-2000	SJH	Created file
+ *   08-02-2000	SJH	Used structure for registers
+ */
+#ifndef _ASM_ARCH_GPTIMERS_H
+#define _ASM_ARCH_GPTIMERS_H
+
+#include <mach/hardware.h>
+
+/*
+ * Layout of L7200 general purpose timer registers
+ */
+struct GPT_Regs {
+	unsigned int TIMERLOAD;
+	unsigned int TIMERVALUE;
+	unsigned int TIMERCONTROL;
+	unsigned int TIMERCLEAR;
+};
+
+#define GPT_BASE		(IO_BASE_2 + 0x3000)
+#define l7200_timer1_regs	((volatile struct GPT_Regs *) (GPT_BASE))
+#define l7200_timer2_regs	((volatile struct GPT_Regs *) (GPT_BASE + 0x20))
+
+/*
+ * General register values
+ */
+#define	GPT_PRESCALE_1		0x00000000
+#define	GPT_PRESCALE_16		0x00000004
+#define	GPT_PRESCALE_256	0x00000008
+#define GPT_MODE_FREERUN	0x00000000
+#define GPT_MODE_PERIODIC	0x00000040
+#define GPT_ENABLE		0x00000080
+#define GPT_BZTOG		0x00000100
+#define GPT_BZMOD		0x00000200
+#define GPT_LOAD_MASK 		0x0000ffff
+
+#endif

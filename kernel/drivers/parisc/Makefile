@@ -1,0 +1,58 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Makefile for most of the non-PCI devices in PA-RISC machines
+#
+
+# I/O SAPIC is also on IA64 platforms.
+# The two could be merged into a common source some day.
+obj-$(CONFIG_IOSAPIC)		+= iosapic.o
+obj-$(CONFIG_IOMMU_SBA)		+= sba_iommu.o
+obj-$(CONFIG_PCI_LBA)		+= lba_pci.o
+
+# Only use one of them: ccio-rm-dma is for PCX-W systems *only*
+# obj-$(CONFIG_IOMMU_CCIO)	+= ccio-rm-dma.o
+obj-$(CONFIG_IOMMU_CCIO)	+= ccio-dma.o
+
+obj-$(CONFIG_GSC)		+= gsc.o
+
+obj-$(CONFIG_HPPB)		+= hppb.o
+obj-$(CONFIG_GSC_DINO)		+= dino.o
+obj-$(CONFIG_GSC_LASI)		+= lasi.o asp.o
+obj-$(CONFIG_GSC_WAX)		+= wax.o
+obj-$(CONFIG_EISA)		+= eisa.o eisa_enumerator.o eisa_eeprom.o
+
+obj-$(CONFIG_SUPERIO)		+= superio.o
+obj-$(CONFIG_CHASSIS_LCD_LED)	+= led.o
+obj-$(CONFIG_PDC_STABLE)	+= pdc_stable.o
+obj-y				+= power.o
+

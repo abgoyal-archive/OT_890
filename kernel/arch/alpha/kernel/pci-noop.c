@@ -1,0 +1,250 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ *	linux/arch/alpha/kernel/pci-noop.c
+ *
+ * Stub PCI interfaces for Jensen-specific kernels.
+ */
+
+#include <linux/pci.h>
+#include <linux/init.h>
+#include <linux/bootmem.h>
+#include <linux/capability.h>
+#include <linux/mm.h>
+#include <linux/errno.h>
+#include <linux/sched.h>
+#include <linux/dma-mapping.h>
+#include <linux/scatterlist.h>
+
+#include "proto.h"
+
+
+/*
+ * The PCI controller list.
+ */
+
+struct pci_controller *hose_head, **hose_tail = &hose_head;
+struct pci_controller *pci_isa_hose;
+
+
+struct pci_controller * __init
+alloc_pci_controller(void)
+{
+	struct pci_controller *hose;
+
+	hose = alloc_bootmem(sizeof(*hose));
+
+	*hose_tail = hose;
+	hose_tail = &hose->next;
+
+	return hose;
+}
+
+struct resource * __init
+alloc_resource(void)
+{
+	struct resource *res;
+
+	res = alloc_bootmem(sizeof(*res));
+
+	return res;
+}
+
+asmlinkage long
+sys_pciconfig_iobase(long which, unsigned long bus, unsigned long dfn)
+{
+	struct pci_controller *hose;
+
+	/* from hose or from bus.devfn */
+	if (which & IOBASE_FROM_HOSE) {
+		for (hose = hose_head; hose; hose = hose->next) 
+			if (hose->index == bus)
+				break;
+		if (!hose)
+			return -ENODEV;
+	} else {
+		/* Special hook for ISA access.  */
+		if (bus == 0 && dfn == 0)
+			hose = pci_isa_hose;
+		else
+			return -ENODEV;
+	}
+
+	switch (which & ~IOBASE_FROM_HOSE) {
+	case IOBASE_HOSE:
+		return hose->index;
+	case IOBASE_SPARSE_MEM:
+		return hose->sparse_mem_base;
+	case IOBASE_DENSE_MEM:
+		return hose->dense_mem_base;
+	case IOBASE_SPARSE_IO:
+		return hose->sparse_io_base;
+	case IOBASE_DENSE_IO:
+		return hose->dense_io_base;
+	case IOBASE_ROOT_BUS:
+		return hose->bus->number;
+	}
+
+	return -EOPNOTSUPP;
+}
+
+asmlinkage long
+sys_pciconfig_read(unsigned long bus, unsigned long dfn,
+		   unsigned long off, unsigned long len, void *buf)
+{
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+	else
+		return -ENODEV;
+}
+
+asmlinkage long
+sys_pciconfig_write(unsigned long bus, unsigned long dfn,
+		    unsigned long off, unsigned long len, void *buf)
+{
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+	else
+		return -ENODEV;
+}
+
+/* Stubs for the routines in pci_iommu.c: */
+
+void *
+__pci_alloc_consistent(struct pci_dev *pdev, size_t size,
+		       dma_addr_t *dma_addrp, gfp_t gfp)
+{
+	return NULL;
+}
+
+void
+pci_free_consistent(struct pci_dev *pdev, size_t size, void *cpu_addr,
+		    dma_addr_t dma_addr)
+{
+}
+
+dma_addr_t
+pci_map_single(struct pci_dev *pdev, void *cpu_addr, size_t size,
+	       int direction)
+{
+	return (dma_addr_t) 0;
+}
+
+void
+pci_unmap_single(struct pci_dev *pdev, dma_addr_t dma_addr, size_t size,
+		 int direction)
+{
+}
+
+int
+pci_map_sg(struct pci_dev *pdev, struct scatterlist *sg, int nents,
+	   int direction)
+{
+	return 0;
+}
+
+void
+pci_unmap_sg(struct pci_dev *pdev, struct scatterlist *sg, int nents,
+	     int direction)
+{
+}
+
+int
+pci_dma_supported(struct pci_dev *hwdev, dma_addr_t mask)
+{
+	return 0;
+}
+
+/* Generic DMA mapping functions: */
+
+void *
+dma_alloc_coherent(struct device *dev, size_t size,
+		   dma_addr_t *dma_handle, gfp_t gfp)
+{
+	void *ret;
+
+	if (!dev || *dev->dma_mask >= 0xffffffffUL)
+		gfp &= ~GFP_DMA;
+	ret = (void *)__get_free_pages(gfp, get_order(size));
+	if (ret) {
+		memset(ret, 0, size);
+		*dma_handle = virt_to_phys(ret);
+	}
+	return ret;
+}
+
+EXPORT_SYMBOL(dma_alloc_coherent);
+
+int
+dma_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
+	   enum dma_data_direction direction)
+{
+	int i;
+	struct scatterlist *sg;
+
+	for_each_sg(sgl, sg, nents, i) {
+		void *va;
+
+		BUG_ON(!sg_page(sg));
+		va = sg_virt(sg);
+		sg_dma_address(sg) = (dma_addr_t)virt_to_phys(va);
+		sg_dma_len(sg) = sg->length;
+	}
+
+	return nents;
+}
+
+EXPORT_SYMBOL(dma_map_sg);
+
+int
+dma_set_mask(struct device *dev, u64 mask)
+{
+	if (!dev->dma_mask || !dma_supported(dev, mask))
+		return -EIO;
+
+	*dev->dma_mask = mask;
+
+	return 0;
+}
+EXPORT_SYMBOL(dma_set_mask);
+
+void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
+{
+	return NULL;
+}
+
+void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+{
+}
+
+EXPORT_SYMBOL(pci_iomap);
+EXPORT_SYMBOL(pci_iounmap);

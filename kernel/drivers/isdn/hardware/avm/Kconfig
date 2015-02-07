@@ -1,0 +1,94 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# ISDN AVM drivers
+#
+
+menuconfig CAPI_AVM
+	bool "Active AVM cards"
+	help
+	  Enable support for AVM active ISDN cards.
+
+if CAPI_AVM
+
+config ISDN_DRV_AVMB1_B1ISA
+	tristate "AVM B1 ISA support"
+	depends on ISA
+	help
+	  Enable support for the ISA version of the AVM B1 card.
+
+config ISDN_DRV_AVMB1_B1PCI
+	tristate "AVM B1 PCI support"
+	depends on PCI
+	help
+	  Enable support for the PCI version of the AVM B1 card.
+
+config ISDN_DRV_AVMB1_B1PCIV4
+	bool "AVM B1 PCI V4 support"
+	depends on ISDN_DRV_AVMB1_B1PCI
+	help
+	  Enable support for the V4 version of AVM B1 PCI card.
+
+config ISDN_DRV_AVMB1_T1ISA
+	tristate "AVM T1/T1-B ISA support"
+	depends on ISA
+	help
+	  Enable support for the AVM T1 T1B card.
+	  Note: This is a PRI card and handle 30 B-channels.
+
+config ISDN_DRV_AVMB1_B1PCMCIA
+	tristate "AVM B1/M1/M2 PCMCIA support"
+	help
+	  Enable support for the PCMCIA version of the AVM B1 card.
+
+config ISDN_DRV_AVMB1_AVM_CS
+	tristate "AVM B1/M1/M2 PCMCIA cs module"
+	depends on ISDN_DRV_AVMB1_B1PCMCIA && PCMCIA
+	help
+	  Enable the PCMCIA client driver for the AVM B1/M1/M2
+	  PCMCIA cards.
+
+config ISDN_DRV_AVMB1_T1PCI
+	tristate "AVM T1/T1-B PCI support"
+	depends on PCI
+	help
+	  Enable support for the AVM T1 T1B card.
+	  Note: This is a PRI card and handle 30 B-channels.
+
+config ISDN_DRV_AVMB1_C4
+	tristate "AVM C4/C2 support"
+	depends on PCI
+	help
+	  Enable support for the AVM C4/C2 PCI cards.
+	  These cards handle 4/2 BRI ISDN lines (8/4 channels).
+
+endif # CAPI_AVM

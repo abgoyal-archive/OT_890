@@ -1,0 +1,90 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+menu "EEPROM support"
+
+config EEPROM_AT24
+	tristate "I2C EEPROMs from most vendors"
+	depends on I2C && SYSFS && EXPERIMENTAL
+	help
+	  Enable this driver to get read/write support to most I2C EEPROMs,
+	  after you configure the driver to know about each EEPROM on
+	  your target board.  Use these generic chip names, instead of
+	  vendor-specific ones like at24c64 or 24lc02:
+
+	     24c00, 24c01, 24c02, spd (readonly 24c02), 24c04, 24c08,
+	     24c16, 24c32, 24c64, 24c128, 24c256, 24c512, 24c1024
+
+	  Unless you like data loss puzzles, always be sure that any chip
+	  you configure as a 24c32 (32 kbit) or larger is NOT really a
+	  24c16 (16 kbit) or smaller, and vice versa. Marking the chip
+	  as read-only won't help recover from this. Also, if your chip
+	  has any software write-protect mechanism you may want to review the
+	  code to make sure this driver won't turn it on by accident.
+
+	  If you use this with an SMBus adapter instead of an I2C adapter,
+	  full functionality is not available.  Only smaller devices are
+	  supported (24c16 and below, max 4 kByte).
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called at24.
+
+config EEPROM_AT25
+	tristate "SPI EEPROMs from most vendors"
+	depends on SPI && SYSFS
+	help
+	  Enable this driver to get read/write support to most SPI EEPROMs,
+	  after you configure the board init code to know about each eeprom
+	  on your target board.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called at25.
+
+config EEPROM_LEGACY
+	tristate "Old I2C EEPROM reader"
+	depends on I2C && SYSFS
+	help
+	  If you say yes here you get read-only access to the EEPROM data
+	  available on modern memory DIMMs and Sony Vaio laptops via I2C. Such
+	  EEPROMs could theoretically be available on other devices as well.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called eeprom.
+
+config EEPROM_93CX6
+	tristate "EEPROM 93CX6 support"
+	help
+	  This is a driver for the EEPROM chipsets 93c46 and 93c66.
+	  The driver supports both read as well as write commands.
+
+	  If unsure, say N.
+
+endmenu

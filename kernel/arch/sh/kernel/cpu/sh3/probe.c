@@ -1,0 +1,142 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ * arch/sh/kernel/cpu/sh3/probe.c
+ *
+ * CPU Subtype Probing for SH-3.
+ *
+ * Copyright (C) 1999, 2000  Niibe Yutaka
+ * Copyright (C) 2002  Paul Mundt
+ *
+ * This file is subject to the terms and conditions of the GNU General Public
+ * License.  See the file "COPYING" in the main directory of this archive
+ * for more details.
+ */
+
+#include <linux/init.h>
+#include <asm/processor.h>
+#include <asm/cache.h>
+#include <asm/io.h>
+
+int __uses_jump_to_uncached detect_cpu_and_cache_system(void)
+{
+	unsigned long addr0, addr1, data0, data1, data2, data3;
+
+	jump_to_uncached();
+	/*
+	 * Check if the entry shadows or not.
+	 * When shadowed, it's 128-entry system.
+	 * Otherwise, it's 256-entry system.
+	 */
+	addr0 = CACHE_OC_ADDRESS_ARRAY + (3 << 12);
+	addr1 = CACHE_OC_ADDRESS_ARRAY + (1 << 12);
+
+	/* First, write back & invalidate */
+	data0  = ctrl_inl(addr0);
+	ctrl_outl(data0&~(SH_CACHE_VALID|SH_CACHE_UPDATED), addr0);
+	data1  = ctrl_inl(addr1);
+	ctrl_outl(data1&~(SH_CACHE_VALID|SH_CACHE_UPDATED), addr1);
+
+	/* Next, check if there's shadow or not */
+	data0 = ctrl_inl(addr0);
+	data0 ^= SH_CACHE_VALID;
+	ctrl_outl(data0, addr0);
+	data1 = ctrl_inl(addr1);
+	data2 = data1 ^ SH_CACHE_VALID;
+	ctrl_outl(data2, addr1);
+	data3 = ctrl_inl(addr0);
+
+	/* Lastly, invaliate them. */
+	ctrl_outl(data0&~SH_CACHE_VALID, addr0);
+	ctrl_outl(data2&~SH_CACHE_VALID, addr1);
+
+	back_to_cached();
+
+	boot_cpu_data.dcache.ways		= 4;
+	boot_cpu_data.dcache.entry_shift	= 4;
+	boot_cpu_data.dcache.linesz		= L1_CACHE_BYTES;
+	boot_cpu_data.dcache.flags		= 0;
+
+	/*
+	 * 7709A/7729 has 16K cache (256-entry), while 7702 has only
+	 * 2K(direct) 7702 is not supported (yet)
+	 */
+	if (data0 == data1 && data2 == data3) {	/* Shadow */
+		boot_cpu_data.dcache.way_incr	= (1 << 11);
+		boot_cpu_data.dcache.entry_mask	= 0x7f0;
+		boot_cpu_data.dcache.sets	= 128;
+		boot_cpu_data.type = CPU_SH7708;
+
+		boot_cpu_data.flags |= CPU_HAS_MMU_PAGE_ASSOC;
+	} else {				/* 7709A or 7729  */
+		boot_cpu_data.dcache.way_incr	= (1 << 12);
+		boot_cpu_data.dcache.entry_mask	= 0xff0;
+		boot_cpu_data.dcache.sets	= 256;
+		boot_cpu_data.type = CPU_SH7729;
+
+#if defined(CONFIG_CPU_SUBTYPE_SH7706)
+		boot_cpu_data.type = CPU_SH7706;
+#endif
+#if defined(CONFIG_CPU_SUBTYPE_SH7710)
+		boot_cpu_data.type = CPU_SH7710;
+#endif
+#if defined(CONFIG_CPU_SUBTYPE_SH7712)
+		boot_cpu_data.type = CPU_SH7712;
+#endif
+#if defined(CONFIG_CPU_SUBTYPE_SH7720)
+		boot_cpu_data.type = CPU_SH7720;
+#endif
+#if defined(CONFIG_CPU_SUBTYPE_SH7721)
+		boot_cpu_data.type = CPU_SH7721;
+#endif
+#if defined(CONFIG_CPU_SUBTYPE_SH7705)
+		boot_cpu_data.type = CPU_SH7705;
+
+#if defined(CONFIG_SH7705_CACHE_32KB)
+		boot_cpu_data.dcache.way_incr	= (1 << 13);
+		boot_cpu_data.dcache.entry_mask	= 0x1ff0;
+		boot_cpu_data.dcache.sets	= 512;
+		ctrl_outl(CCR_CACHE_32KB, CCR3_REG);
+#else
+		ctrl_outl(CCR_CACHE_16KB, CCR3_REG);
+#endif
+#endif
+	}
+
+	/*
+	 * SH-3 doesn't have separate caches
+	 */
+	boot_cpu_data.dcache.flags |= SH_CACHE_COMBINED;
+	boot_cpu_data.icache = boot_cpu_data.dcache;
+
+	return 0;
+}

@@ -1,0 +1,95 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# IPMI device configuration
+#
+
+menuconfig IPMI_HANDLER
+       tristate 'IPMI top-level message handler'
+       depends on HAS_IOMEM
+       help
+         This enables the central IPMI message handler, required for IPMI
+	 to work.
+
+         IPMI is a standard for managing sensors (temperature,
+         voltage, etc.) in a system.
+
+         See <file:Documentation/IPMI.txt> for more details on the driver.
+
+	 If unsure, say N.
+
+if IPMI_HANDLER
+
+config IPMI_PANIC_EVENT
+       bool 'Generate a panic event to all BMCs on a panic'
+       help
+         When a panic occurs, this will cause the IPMI message handler to
+	 generate an IPMI event describing the panic to each interface
+	 registered with the message handler.
+
+config IPMI_PANIC_STRING
+	bool 'Generate OEM events containing the panic string'
+	depends on IPMI_PANIC_EVENT
+	help
+	  When a panic occurs, this will cause the IPMI message handler to
+	  generate IPMI OEM type f0 events holding the IPMB address of the
+	  panic generator (byte 4 of the event), a sequence number for the
+	  string (byte 5 of the event) and part of the string (the rest of the
+	  event).  Bytes 1, 2, and 3 are the normal usage for an OEM event.
+	  You can fetch these events and use the sequence numbers to piece the
+	  string together.
+
+config IPMI_DEVICE_INTERFACE
+       tristate 'Device interface for IPMI'
+       help
+         This provides an IOCTL interface to the IPMI message handler so
+	 userland processes may use IPMI.  It supports poll() and select().
+
+config IPMI_SI
+       tristate 'IPMI System Interface handler'
+       help
+         Provides a driver for System Interfaces (KCS, SMIC, BT).
+	 Currently, only KCS and SMIC are supported.  If
+	 you are using IPMI, you should probably say "y" here.
+
+config IPMI_WATCHDOG
+       tristate 'IPMI Watchdog Timer'
+       help
+         This enables the IPMI watchdog timer.
+
+config IPMI_POWEROFF
+       tristate 'IPMI Poweroff'
+       help
+         This enables a function to power off the system with IPMI if
+	 the IPMI management controller is capable of this.
+
+endif # IPMI_HANDLER

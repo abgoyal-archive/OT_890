@@ -1,0 +1,117 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ * linux/fs/nfsd/lockd.c
+ *
+ * This file contains all the stubs needed when communicating with lockd.
+ * This level of indirection is necessary so we can run nfsd+lockd without
+ * requiring the nfs client to be compiled in/loaded, and vice versa.
+ *
+ * Copyright (C) 1996, Olaf Kirch <okir@monad.swb.de>
+ */
+
+#include <linux/types.h>
+#include <linux/fs.h>
+#include <linux/file.h>
+#include <linux/mount.h>
+#include <linux/sunrpc/clnt.h>
+#include <linux/sunrpc/svc.h>
+#include <linux/nfsd/nfsd.h>
+#include <linux/lockd/bind.h>
+
+#define NFSDDBG_FACILITY		NFSDDBG_LOCKD
+
+#ifdef CONFIG_LOCKD_V4
+#define nlm_stale_fh	nlm4_stale_fh
+#define nlm_failed	nlm4_failed
+#else
+#define nlm_stale_fh	nlm_lck_denied_nolocks
+#define nlm_failed	nlm_lck_denied_nolocks
+#endif
+/*
+ * Note: we hold the dentry use count while the file is open.
+ */
+static __be32
+nlm_fopen(struct svc_rqst *rqstp, struct nfs_fh *f, struct file **filp)
+{
+	__be32		nfserr;
+	struct svc_fh	fh;
+
+	/* must initialize before using! but maxsize doesn't matter */
+	fh_init(&fh,0);
+	fh.fh_handle.fh_size = f->size;
+	memcpy((char*)&fh.fh_handle.fh_base, f->data, f->size);
+	fh.fh_export = NULL;
+
+	exp_readlock();
+	nfserr = nfsd_open(rqstp, &fh, S_IFREG, NFSD_MAY_LOCK, filp);
+	fh_put(&fh);
+	rqstp->rq_client = NULL;
+	exp_readunlock();
+ 	/* We return nlm error codes as nlm doesn't know
+	 * about nfsd, but nfsd does know about nlm..
+	 */
+	switch (nfserr) {
+	case nfs_ok:
+		return 0;
+	case nfserr_dropit:
+		return nlm_drop_reply;
+	case nfserr_stale:
+		return nlm_stale_fh;
+	default:
+		return nlm_failed;
+	}
+}
+
+static void
+nlm_fclose(struct file *filp)
+{
+	fput(filp);
+}
+
+static struct nlmsvc_binding	nfsd_nlm_ops = {
+	.fopen		= nlm_fopen,		/* open file for locking */
+	.fclose		= nlm_fclose,		/* close file */
+};
+
+void
+nfsd_lockd_init(void)
+{
+	dprintk("nfsd: initializing lockd\n");
+	nlmsvc_ops = &nfsd_nlm_ops;
+}
+
+void
+nfsd_lockd_shutdown(void)
+{
+	nlmsvc_ops = NULL;
+}

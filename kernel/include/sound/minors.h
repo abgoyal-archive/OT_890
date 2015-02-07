@@ -1,0 +1,141 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+#ifndef __SOUND_MINORS_H
+#define __SOUND_MINORS_H
+
+/*
+ *  MINOR numbers
+ *
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ *
+ */
+
+#define SNDRV_OS_MINORS			256
+
+#define SNDRV_MINOR_DEVICES		32
+#define SNDRV_MINOR_CARD(minor)		((minor) >> 5)
+#define SNDRV_MINOR_DEVICE(minor)	((minor) & 0x001f)
+#define SNDRV_MINOR(card, dev)		(((card) << 5) | (dev))
+
+/* these minors can still be used for autoloading devices (/dev/aload*) */
+#define SNDRV_MINOR_CONTROL		0	/* 0 */
+#define SNDRV_MINOR_GLOBAL		1	/* 1 */
+#define SNDRV_MINOR_SEQUENCER		(SNDRV_MINOR_GLOBAL + 0 * 32)
+#define SNDRV_MINOR_TIMER		(SNDRV_MINOR_GLOBAL + 1 * 32)
+
+#ifndef CONFIG_SND_DYNAMIC_MINORS
+						/* 2 - 3 (reserved) */
+#define SNDRV_MINOR_HWDEP		4	/* 4 - 7 */
+#define SNDRV_MINOR_RAWMIDI		8	/* 8 - 15 */
+#define SNDRV_MINOR_PCM_PLAYBACK	16	/* 16 - 23 */
+#define SNDRV_MINOR_PCM_CAPTURE		24	/* 24 - 31 */
+
+/* same as first respective minor number to make minor allocation easier */
+#define SNDRV_DEVICE_TYPE_CONTROL	SNDRV_MINOR_CONTROL
+#define SNDRV_DEVICE_TYPE_HWDEP		SNDRV_MINOR_HWDEP
+#define SNDRV_DEVICE_TYPE_RAWMIDI	SNDRV_MINOR_RAWMIDI
+#define SNDRV_DEVICE_TYPE_PCM_PLAYBACK	SNDRV_MINOR_PCM_PLAYBACK
+#define SNDRV_DEVICE_TYPE_PCM_CAPTURE	SNDRV_MINOR_PCM_CAPTURE
+#define SNDRV_DEVICE_TYPE_SEQUENCER	SNDRV_MINOR_SEQUENCER
+#define SNDRV_DEVICE_TYPE_TIMER		SNDRV_MINOR_TIMER
+
+#else /* CONFIG_SND_DYNAMIC_MINORS */
+
+enum {
+	SNDRV_DEVICE_TYPE_CONTROL,
+	SNDRV_DEVICE_TYPE_SEQUENCER,
+	SNDRV_DEVICE_TYPE_TIMER,
+	SNDRV_DEVICE_TYPE_HWDEP,
+	SNDRV_DEVICE_TYPE_RAWMIDI,
+	SNDRV_DEVICE_TYPE_PCM_PLAYBACK,
+	SNDRV_DEVICE_TYPE_PCM_CAPTURE,
+};
+
+#endif /* CONFIG_SND_DYNAMIC_MINORS */
+
+#define SNDRV_MINOR_HWDEPS		4
+#define SNDRV_MINOR_RAWMIDIS		8
+#define SNDRV_MINOR_PCMS		8
+
+
+#ifdef CONFIG_SND_OSSEMUL
+
+#define SNDRV_MINOR_OSS_DEVICES		16
+#define SNDRV_MINOR_OSS_CARD(minor)	((minor) >> 4)
+#define SNDRV_MINOR_OSS_DEVICE(minor)	((minor) & 0x000f)
+#define SNDRV_MINOR_OSS(card, dev)	(((card) << 4) | (dev))
+
+#define SNDRV_MINOR_OSS_MIXER		0	/* /dev/mixer - OSS 3.XX compatible */
+#define SNDRV_MINOR_OSS_SEQUENCER	1	/* /dev/sequencer - OSS 3.XX compatible */
+#define	SNDRV_MINOR_OSS_MIDI		2	/* /dev/midi - native midi interface - OSS 3.XX compatible - UART */
+#define SNDRV_MINOR_OSS_PCM		3	/* alias */
+#define SNDRV_MINOR_OSS_PCM_8		3	/* /dev/dsp - 8bit PCM - OSS 3.XX compatible */
+#define SNDRV_MINOR_OSS_AUDIO		4	/* /dev/audio - SunSparc compatible */
+#define SNDRV_MINOR_OSS_PCM_16		5	/* /dev/dsp16 - 16bit PCM - OSS 3.XX compatible */
+#define SNDRV_MINOR_OSS_SNDSTAT		6	/* /dev/sndstat - for compatibility with OSS */
+#define SNDRV_MINOR_OSS_RESERVED7	7	/* reserved for future use */
+#define SNDRV_MINOR_OSS_MUSIC		8	/* /dev/music - OSS 3.XX compatible */
+#define SNDRV_MINOR_OSS_DMMIDI		9	/* /dev/dmmidi0 - this device can have another minor # with OSS */
+#define SNDRV_MINOR_OSS_DMFM		10	/* /dev/dmfm0 - this device can have another minor # with OSS */
+#define SNDRV_MINOR_OSS_MIXER1		11	/* alternate mixer */
+#define SNDRV_MINOR_OSS_PCM1		12	/* alternate PCM (GF-A-1) */
+#define SNDRV_MINOR_OSS_MIDI1		13	/* alternate midi - SYNTH */
+#define SNDRV_MINOR_OSS_DMMIDI1		14	/* alternate dmmidi - SYNTH */
+#define SNDRV_MINOR_OSS_RESERVED15	15	/* reserved for future use */
+
+#define SNDRV_OSS_DEVICE_TYPE_MIXER	0
+#define SNDRV_OSS_DEVICE_TYPE_SEQUENCER	1
+#define SNDRV_OSS_DEVICE_TYPE_PCM	2
+#define SNDRV_OSS_DEVICE_TYPE_MIDI	3
+#define SNDRV_OSS_DEVICE_TYPE_DMFM	4
+#define SNDRV_OSS_DEVICE_TYPE_SNDSTAT	5
+#define SNDRV_OSS_DEVICE_TYPE_MUSIC	6
+
+#define MODULE_ALIAS_SNDRV_MINOR(type) \
+	MODULE_ALIAS("sound-service-?-" __stringify(type))
+
+#endif
+
+#endif /* __SOUND_MINORS_H */

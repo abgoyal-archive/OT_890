@@ -1,0 +1,62 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Makefile for ppc-specific library files..
+#
+
+ifeq ($(CONFIG_PPC64),y)
+EXTRA_CFLAGS		+= -mno-minimal-toc
+endif
+
+CFLAGS_REMOVE_code-patching.o = -pg
+CFLAGS_REMOVE_feature-fixups.o = -pg
+
+obj-y			:= string.o alloc.o \
+			   checksum_$(CONFIG_WORD_SIZE).o
+obj-$(CONFIG_PPC32)	+= div64.o copy_32.o crtsavres.o
+obj-$(CONFIG_HAS_IOMEM)	+= devres.o
+
+obj-$(CONFIG_PPC64)	+= copypage_64.o copyuser_64.o \
+			   memcpy_64.o usercopy_64.o mem_64.o string.o
+obj-$(CONFIG_XMON)	+= sstep.o
+obj-$(CONFIG_KPROBES)	+= sstep.o
+obj-$(CONFIG_NOT_COHERENT_CACHE)	+= dma-noncoherent.o
+
+ifeq ($(CONFIG_PPC64),y)
+obj-$(CONFIG_SMP)	+= locks.o
+endif
+
+obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
+
+obj-y			+= code-patching.o
+obj-y			+= feature-fixups.o
+obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o

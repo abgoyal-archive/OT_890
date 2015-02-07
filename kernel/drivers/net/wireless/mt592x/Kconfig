@@ -1,0 +1,87 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+#
+# The following software/firmware and/or related documentation ("MediaTek Software")
+# have been modified by MediaTek Inc. All revisions are subject to any receiver's
+# applicable license agreements with MediaTek Inc.
+
+
+config MT592X
+	tristate "MediaTek MT592x driver support"
+	depends on WLAN_80211
+	select WIRELESS_EXT
+
+config MT5921
+	bool "MediaTek MT5921 WLAN card"
+	depends on MT592X
+
+config MT5922
+	bool "MediaTek MT5922 WLAN card"
+	depends on MT592X
+
+config MT592X_DEBUG
+	bool "MediaTek MT592x debug support"
+	depends on MT592X
+
+config MT592X_PROC
+	bool "MediaTek MT592x proc support"
+	depends on MT592X
+
+config MT592X_IBSS
+	bool "MediaTek MT592x IBSS support"
+	depends on MT592X
+
+config MT592X_SW_ENC
+	bool "MediaTek MT592x software encrypt support"
+	depends on MT592X
+
+config MT592X_WPS
+	bool "MediaTek MT592x WPS support"
+	depends on MT592X
+
+config MT592X_EEPROM
+	bool "MediaTek MT592x EEPROM support"
+	depends on MT592X
+
+config MT592X_WAPI
+	bool "MediaTek MT592x WAPI support"
+	depends on MT592X
+
+config MT592X_PTA
+	bool "MediaTek MT592x PTA support"
+	depends on MT592X
+
+config MT592X_SDIO
+	bool "MediaTek MT592x SDIO support"
+	depends on MT592X && MMC
+
+config MT592X_SDIO_CLNT
+	tristate "MediaTek MT592X SDIO CLNT support"
+	depends on MMC 

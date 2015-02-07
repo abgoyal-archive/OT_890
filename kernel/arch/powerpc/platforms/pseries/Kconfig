@@ -1,0 +1,96 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config PPC_PSERIES
+	depends on PPC_MULTIPLATFORM && PPC64
+	bool "IBM pSeries & new (POWER5-based) iSeries"
+	select MPIC
+	select PPC_I8259
+	select PPC_RTAS
+	select RTAS_ERROR_LOGGING
+	select PPC_UDBG_16550
+	select PPC_NATIVE
+	select PPC_PCI_CHOICE if EMBEDDED
+	default y
+
+config PPC_SPLPAR
+	depends on PPC_PSERIES
+	bool "Support for shared-processor logical partitions"
+	default n
+	help
+	  Enabling this option will make the kernel run more efficiently
+	  on logically-partitioned pSeries systems which use shared
+	  processors, that is, which share physical processors between
+	  two or more partitions.
+
+config EEH
+	bool "PCI Extended Error Handling (EEH)" if EMBEDDED
+	depends on PPC_PSERIES && PCI
+	default y if !EMBEDDED
+
+config SCANLOG
+	tristate "Scanlog dump interface"
+	depends on RTAS_PROC && PPC_PSERIES
+
+config LPARCFG
+	bool "LPAR Configuration Data"
+	depends on PPC_PSERIES || PPC_ISERIES
+	help
+	Provide system capacity information via human readable
+	<key word>=<value> pairs through a /proc/ppc64/lparcfg interface.
+
+config PPC_PSERIES_DEBUG
+	depends on PPC_PSERIES && PPC_EARLY_DEBUG
+	bool "Enable extra debug logging in platforms/pseries"
+	default y
+
+config PPC_SMLPAR
+	bool "Support for shared-memory logical partitions"
+	depends on PPC_PSERIES
+	select LPARCFG
+	default n
+	help
+	  Select this option to enable shared memory partition support.
+	  With this option a system running in an LPAR can be given more
+	  memory than physically available and will allow firmware to
+	  balance memory across many LPARs.
+
+config CMM
+	tristate "Collaborative memory management"
+	depends on PPC_SMLPAR && !CRASH_DUMP
+	default y
+	help
+	  Select this option, if you want to enable the kernel interface
+	  to reduce the memory size of the system. This is accomplished
+	  by allocating pages of memory and put them "on hold". This only
+	  makes sense for a system running in an LPAR where the unused pages
+	  will be reused for other LPARs. The interface allows firmware to
+	  balance memory across many LPARs.

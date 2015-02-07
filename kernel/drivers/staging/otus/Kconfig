@@ -1,0 +1,63 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config OTUS
+	tristate "Atheros OTUS 802.11n USB wireless support"
+	depends on USB && WLAN_80211 && MAC80211
+	default N
+	---help---
+	  Enable support for Atheros 802.11n USB hardware:
+	    * UB81 - 2x2 2.4 GHz
+	    * UB82 - 2x2 2.4 GHz and 5 GHz
+	    * UB83 - 1x2 2.4 GHz
+
+	  This includes the following devices currently on the market:
+	  Dlink DWA-160A1, Netgear WNDA3100 and WN111v2, TP-Link
+	  TL-WN821N, and AVM FRITZ!WLAN N USB Stick.
+
+	  This driver requires its own supplicant driver for
+	  wpa_supplicant 0.4.8. For your convenience you can find the
+	  tarball here:
+
+	  http://www.kernel.org/pub/linux/kernel/people/mcgrof/otus/wpa_supplicant-0.4.8_otus.tar.bz2
+
+	  Before compiling wpa_supplicant, ensure your .config has at
+	  least the following:
+		CONFIG_WIRELESS_EXTENSION=y
+		CONFIG_EAP_WSC=y
+		CONFIG_WSC_IE=y
+		CONFIG_DRIVER_WEXT=y
+		CONFIG_DRIVER_OTUS=y
+
+	  After a successful compile, you can use the Atheros device as
+	  shown in the example:
+	  $ wpa_supplicant -Dotus -i <atheros device from ifconfig> -c /path/to/wpa_supplicant.conf -d
+

@@ -1,0 +1,115 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# SCSI driver configuration for Acorn
+#
+config SCSI_ACORNSCSI_3
+	tristate "Acorn SCSI card (aka30) support"
+	depends on ARCH_ACORN && SCSI
+	select SCSI_SPI_ATTRS
+	help
+	  This enables support for the Acorn SCSI card (aka30). If you have an
+	  Acorn system with one of these, say Y. If unsure, say N.
+
+config SCSI_ACORNSCSI_TAGGED_QUEUE
+	bool "Support SCSI 2 Tagged queueing"
+	depends on SCSI_ACORNSCSI_3
+	help
+	  Say Y here to enable tagged queuing support on the Acorn SCSI card.
+
+	  This is a feature of SCSI-2 which improves performance: the host
+	  adapter can send several SCSI commands to a device's queue even if
+	  previous commands haven't finished yet. Some SCSI devices don't
+	  implement this properly, so the safe answer is N.
+
+config SCSI_ACORNSCSI_SYNC
+	bool "Support SCSI 2 Synchronous Transfers"
+	depends on SCSI_ACORNSCSI_3
+	help
+	  Say Y here to enable synchronous transfer negotiation with all
+	  targets on the Acorn SCSI card.
+
+	  In general, this improves performance; however some SCSI devices
+	  don't implement it properly, so the safe answer is N.
+
+config SCSI_ARXESCSI
+	tristate "ARXE SCSI support"
+	depends on ARCH_ACORN && SCSI
+	help
+	  Around 1991, Arxe Systems Limited released a high density floppy
+	  disc interface for the Acorn Archimedes range, to allow the use of
+	  HD discs from the then new A5000 on earlier models. This interface
+	  was either sold on its own or with an integral SCSI controller.
+	  Technical details on this NCR53c94-based device are available at
+	  <http://www.cryton.demon.co.uk/acornbits/scsi_arxe.html>
+	  Say Y here to compile in support for the SCSI controller.
+
+config SCSI_CUMANA_2
+	tristate "CumanaSCSI II support"
+	depends on ARCH_ACORN && SCSI
+	help
+	  This enables support for the Cumana SCSI II card. If you have an
+	  Acorn system with one of these, say Y. If unsure, say N.
+
+config SCSI_EESOXSCSI
+	tristate "EESOX support"
+	depends on ARCH_ACORN && SCSI
+	help
+	  This enables support for the EESOX SCSI card. If you have an Acorn
+	  system with one of these, say Y, otherwise say N.
+
+config SCSI_POWERTECSCSI
+	tristate "PowerTec support"
+	depends on ARCH_ACORN && SCSI
+	help
+	  This enables support for the Powertec SCSI card on Acorn systems. If
+	  you have one of these, say Y. If unsure, say N.
+
+comment "The following drivers are not fully supported"
+	depends on ARCH_ACORN && EXPERIMENTAL
+
+config SCSI_CUMANA_1
+	tristate "CumanaSCSI I support (EXPERIMENTAL)"
+	depends on ARCH_ACORN && EXPERIMENTAL && SCSI
+	select SCSI_SPI_ATTRS
+	help
+	  This enables support for the Cumana SCSI I card. If you have an
+	  Acorn system with one of these, say Y. If unsure, say N.
+
+config SCSI_OAK1
+	tristate "Oak SCSI support (EXPERIMENTAL)"
+	depends on ARCH_ACORN && EXPERIMENTAL && SCSI
+	select SCSI_SPI_ATTRS
+	help
+	  This enables support for the Oak SCSI card. If you have an Acorn
+	  system with one of these, say Y. If unsure, say N.
+

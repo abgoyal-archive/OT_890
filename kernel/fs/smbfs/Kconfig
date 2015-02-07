@@ -1,0 +1,86 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config SMB_FS
+	tristate "SMB file system support (OBSOLETE, please use CIFS)"
+	depends on INET
+	select NLS
+	help
+	  SMB (Server Message Block) is the protocol Windows for Workgroups
+	  (WfW), Windows 95/98, Windows NT and OS/2 Lan Manager use to share
+	  files and printers over local networks.  Saying Y here allows you to
+	  mount their file systems (often called "shares" in this context) and
+	  access them just like any other Unix directory.  Currently, this
+	  works only if the Windows machines use TCP/IP as the underlying
+	  transport protocol, and not NetBEUI.  For details, read
+	  <file:Documentation/filesystems/smbfs.txt> and the SMB-HOWTO,
+	  available from <http://www.tldp.org/docs.html#howto>.
+
+	  Note: if you just want your box to act as an SMB *server* and make
+	  files and printing services available to Windows clients (which need
+	  to have a TCP/IP stack), you don't need to say Y here; you can use
+	  the program SAMBA (available from <ftp://ftp.samba.org/pub/samba/>)
+	  for that.
+
+	  General information about how to connect Linux, Windows machines and
+	  Macs is on the WWW at <http://www.eats.com/linux_mac_win.html>.
+
+	  To compile the SMB support as a module, choose M here:
+	  the module will be called smbfs.  Most people say N, however.
+
+config SMB_NLS_DEFAULT
+	bool "Use a default NLS"
+	depends on SMB_FS
+	help
+	  Enabling this will make smbfs use nls translations by default. You
+	  need to specify the local charset (CONFIG_NLS_DEFAULT) in the nls
+	  settings and you need to give the default nls for the SMB server as
+	  CONFIG_SMB_NLS_REMOTE.
+
+	  The nls settings can be changed at mount time, if your smbmount
+	  supports that, using the codepage and iocharset parameters.
+
+	  smbmount from samba 2.2.0 or later supports this.
+
+config SMB_NLS_REMOTE
+	string "Default Remote NLS Option"
+	depends on SMB_NLS_DEFAULT
+	default "cp437"
+	help
+	  This setting allows you to specify a default value for which
+	  codepage the server uses. If this field is left blank no
+	  translations will be done by default. The local codepage/charset
+	  default to CONFIG_NLS_DEFAULT.
+
+	  The nls settings can be changed at mount time, if your smbmount
+	  supports that, using the codepage and iocharset parameters.
+
+	  smbmount from samba 2.2.0 or later supports this.

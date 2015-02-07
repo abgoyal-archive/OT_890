@@ -1,0 +1,124 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+if ARCH_FOOTBRIDGE
+
+menu "Footbridge Implementations"
+
+config ARCH_CATS
+	bool "CATS"
+	select FOOTBRIDGE_HOST
+	select ISA
+	select ISA_DMA
+	select PCI
+	help
+	  Say Y here if you intend to run this kernel on the CATS.
+
+	  Saying N will reduce the size of the Footbridge kernel.
+
+config ARCH_PERSONAL_SERVER
+	bool "Compaq Personal Server"
+	select FOOTBRIDGE_HOST
+	select ISA
+	select ISA_DMA
+	select PCI
+	---help---
+	  Say Y here if you intend to run this kernel on the Compaq
+	  Personal Server.
+
+	  Saying N will reduce the size of the Footbridge kernel.
+
+	  The Compaq Personal Server is not available for purchase.
+	  There are no product plans beyond the current research
+	  prototypes at this time.  Information is available at:
+
+	  <http://www.crl.hpl.hp.com/projects/personalserver/>
+
+	  If you have any questions or comments about the  Compaq Personal
+	  Server, send e-mail to <skiff@crl.dec.com>.
+
+config ARCH_EBSA285_ADDIN
+	bool "EBSA285 (addin mode)"
+	select ARCH_EBSA285
+	select FOOTBRIDGE_ADDIN
+	help
+	  Say Y here if you intend to run this kernel on the EBSA285 card
+	  in addin mode.
+
+	  Saying N will reduce the size of the Footbridge kernel.
+
+config ARCH_EBSA285_HOST
+	bool "EBSA285 (host mode)"
+	select ARCH_EBSA285
+	select FOOTBRIDGE_HOST
+	select ISA
+	select ISA_DMA
+	select PCI
+	help
+	  Say Y here if you intend to run this kernel on the EBSA285 card
+	  in host ("central function") mode.
+
+	  Saying N will reduce the size of the Footbridge kernel.
+
+config ARCH_NETWINDER
+	bool "NetWinder"
+	select FOOTBRIDGE_HOST
+	select ISA
+	select ISA_DMA
+	select PCI
+	help
+	  Say Y here if you intend to run this kernel on the Rebel.COM
+	  NetWinder.  Information about this machine can be found at:
+
+	  <http://www.netwinder.org/>
+
+	  Saying N will reduce the size of the Footbridge kernel.
+
+endmenu
+
+# Footbridge support
+config FOOTBRIDGE
+	bool
+
+# Footbridge in host mode
+config FOOTBRIDGE_HOST
+	bool
+
+# Footbridge in addin mode
+config FOOTBRIDGE_ADDIN
+	bool
+
+# EBSA285 board in either host or addin mode
+config ARCH_EBSA285
+	select ARCH_MAY_HAVE_PC_FDC
+	bool
+
+endif

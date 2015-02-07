@@ -1,0 +1,214 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ *
+ * The following software/firmware and/or related documentation ("MediaTek Software")
+ * have been modified by MediaTek Inc. All revisions are subject to any receiver's
+ * applicable license agreements with MediaTek Inc.
+ */
+
+/*****************************************************************************
+*  Copyright Statement:
+*  --------------------
+*  This software is protected by Copyright and the information contained
+*  herein is confidential. The software may not be copied and the information
+*  contained herein may not be used or disclosed except with the written
+*  permission of MediaTek Inc. (C) 2008
+*
+*  BY OPENING THIS FILE, BUYER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+*  THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+*  RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO BUYER ON
+*  AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+*  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+*  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+*  NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+*  SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+*  SUPPLIED WITH THE MEDIATEK SOFTWARE, AND BUYER AGREES TO LOOK ONLY TO SUCH
+*  THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. MEDIATEK SHALL ALSO
+*  NOT BE RESPONSIBLE FOR ANY MEDIATEK SOFTWARE RELEASES MADE TO BUYER'S
+*  SPECIFICATION OR TO CONFORM TO A PARTICULAR STANDARD OR OPEN FORUM.
+*
+*  BUYER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND CUMULATIVE
+*  LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+*  AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+*  OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY BUYER TO
+*  MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+*
+*  THE TRANSACTION CONTEMPLATED HEREUNDER SHALL BE CONSTRUED IN ACCORDANCE
+*  WITH THE LAWS OF THE STATE OF CALIFORNIA, USA, EXCLUDING ITS CONFLICT OF
+*  LAWS PRINCIPLES.  ANY DISPUTES, CONTROVERSIES OR CLAIMS ARISING THEREOF AND
+*  RELATED THERETO SHALL BE SETTLED BY ARBITRATION IN SAN FRANCISCO, CA, UNDER
+*  THE RULES OF THE INTERNATIONAL CHAMBER OF COMMERCE (ICC).
+*
+*****************************************************************************/
+
+#ifndef _MTK_MT6516_XGPT_SW_H
+#define _MTK_MT6516_XGPT_SW_H
+
+#include <mach/mt6516_typedefs.h>
+
+#include <asm/tcm.h>
+
+//The operation mode of XGPT n
+typedef enum
+{
+    XGPT_ONE_SHOT = 0x0000,
+    XGPT_REPEAT   = 0x0010,
+    XGPT_KEEP_GO  = 0x0020,
+    XGPT_FREE_RUN = 0x0030
+} XGPT_CON_MODE;
+
+//The operation mode of GPT n
+typedef enum
+{
+    GPT_ONE_SHOT = 0x0000,
+    GPT_REPEAT   = 0x4000,
+} GPT_CON_MODE;
+
+//XGPT n input clock frequency.
+typedef enum
+{
+    XGPT_CLK_DIV_1   = 0x0000,
+    XGPT_CLK_DIV_2   = 0x0001,
+    XGPT_CLK_DIV_4   = 0x0002,
+    XGPT_CLK_DIV_8   = 0x0003,
+    XGPT_CLK_DIV_16  = 0x0004,
+    XGPT_CLK_DIV_32  = 0x0005,
+    XGPT_CLK_DIV_64  = 0x0006,
+    XGPT_CLK_DIV_128 = 0x0007
+} XGPT_CLK_DIV;
+
+//GPT n input clock frequency.
+typedef enum
+{
+    GPT_CLK_DIV_1   = 0x0000,
+    GPT_CLK_DIV_2   = 0x0001,
+    GPT_CLK_DIV_4   = 0x0002,
+    GPT_CLK_DIV_8   = 0x0003,
+    GPT_CLK_DIV_16  = 0x0004,
+    GPT_CLK_DIV_32  = 0x0005,
+    GPT_CLK_DIV_64  = 0x0006,
+    GPT_CLK_DIV_128 = 0x0007
+} GPT_CLK_DIV;
+
+typedef enum
+{
+    XGPT1 = 0,
+    XGPT2,
+    XGPT3,
+    XGPT4,
+    XGPT5,
+    XGPT6,
+    XGPT7,    
+    XGPT_TOTAL_COUNT
+} XGPT_NUM;
+
+typedef enum
+{
+    GPT1 = 0,
+    GPT2,
+    GPT3,
+    GPT_TOTAL_COUNT
+} GPT_NUM;
+
+typedef enum
+{
+    USED = 0,
+    NOT_USED
+} Status;
+
+typedef struct 
+{
+    void (*xgpt2_func)(UINT16);
+    void (*xgpt3_func)(UINT16);
+    void (*xgpt4_func)(UINT16);
+    void (*xgpt5_func)(UINT16);
+    void (*xgpt6_func)(UINT16);
+    void (*xgpt7_func)(UINT16);       
+} XGPT_Func;
+
+typedef struct 
+{
+    void (*gpt1_func)(UINT16);
+    void (*gpt2_func)(UINT16);
+} GPT_Func;
+
+typedef struct
+{
+    XGPT_NUM num;          //XGPT2~7
+    XGPT_CON_MODE mode;    //
+    XGPT_CLK_DIV clkDiv;
+    BOOL bIrqEnable;
+    UINT32 u4Compare;
+} XGPT_CONFIG;
+
+typedef struct
+{
+    GPT_NUM num;          //GPT1~2
+    GPT_CON_MODE mode;    //
+    GPT_CLK_DIV clkDiv;
+    UINT32 u4Timeout;
+} GPT_CONFIG;
+
+  
+void XGPT_EnableIRQ(XGPT_NUM);
+void XGPT_DisableIRQ(XGPT_NUM);
+XGPT_NUM __tcmfunc XGPT_Get_IRQSTA(void);
+BOOL __tcmfunc XGPT_Check_IRQSTA(XGPT_NUM numGPT);
+void XGPT_Init(XGPT_NUM timerNum, void (*XGPT_Callback)(UINT16));
+void XGPT_Reset(XGPT_NUM numGPT);
+void __tcmfunc XGPT_LISR(void);
+void __tcmfunc XGPT_AckIRQ(XGPT_NUM);
+void XGPT_Start(XGPT_NUM);
+void XGPT_Restart(XGPT_NUM);
+void XGPT_Stop(XGPT_NUM);
+void XGPT_ClearCount(XGPT_NUM);
+void XGPT_SetOpMode(XGPT_NUM, XGPT_CON_MODE);
+XGPT_CON_MODE XGPT_GetOpMode(XGPT_NUM);
+void XGPT_SetClkDivisor(XGPT_NUM, XGPT_CLK_DIV);
+XGPT_CLK_DIV XGPT_GetClkDivisor(XGPT_NUM);
+UINT32 XGPT_GetCounter(XGPT_NUM);
+void XGPT_SetCompare(XGPT_NUM, UINT32);
+BOOL XGPT_Config(XGPT_CONFIG config);
+
+
+void GPT_Init(GPT_NUM timerNum, void (*GPT_Callback)(UINT16));
+void GPT_Start(GPT_NUM);
+void GPT_Stop(GPT_NUM);
+void GPT_SetOpMode(GPT_NUM, GPT_CON_MODE);
+GPT_CON_MODE GPT_GetOpMode(GPT_NUM);
+void GPT_SetClkDivisor(GPT_NUM, GPT_CLK_DIV);
+GPT_CLK_DIV GPT_GetClkDivisor(GPT_NUM);
+UINT32 GPT_GetTimeout(GPT_NUM);
+void GPT_SetTimeout(GPT_NUM, UINT32);
+BOOL GPT_Config(GPT_CONFIG config);
+
+BOOL XGPT_IsStart(XGPT_NUM numXGPT);
+
+#endif

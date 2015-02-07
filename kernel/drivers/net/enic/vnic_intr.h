@@ -1,0 +1,123 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ * Copyright 2008 Cisco Systems, Inc.  All rights reserved.
+ * Copyright 2007 Nuova Systems, Inc.  All rights reserved.
+ *
+ * This program is free software; you may redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
+#ifndef _VNIC_INTR_H_
+#define _VNIC_INTR_H_
+
+#include <linux/pci.h>
+
+#include "vnic_dev.h"
+
+#define VNIC_INTR_TIMER_MAX		0xffff
+
+#define VNIC_INTR_TIMER_TYPE_ABS	0
+#define VNIC_INTR_TIMER_TYPE_QUIET	1
+
+/* Interrupt control */
+struct vnic_intr_ctrl {
+	u32 coalescing_timer;		/* 0x00 */
+	u32 pad0;
+	u32 coalescing_value;		/* 0x08 */
+	u32 pad1;
+	u32 coalescing_type;		/* 0x10 */
+	u32 pad2;
+	u32 mask_on_assertion;		/* 0x18 */
+	u32 pad3;
+	u32 mask;			/* 0x20 */
+	u32 pad4;
+	u32 int_credits;		/* 0x28 */
+	u32 pad5;
+	u32 int_credit_return;		/* 0x30 */
+	u32 pad6;
+};
+
+struct vnic_intr {
+	unsigned int index;
+	struct vnic_dev *vdev;
+	struct vnic_intr_ctrl __iomem *ctrl;		/* memory-mapped */
+};
+
+static inline void vnic_intr_unmask(struct vnic_intr *intr)
+{
+	iowrite32(0, &intr->ctrl->mask);
+}
+
+static inline void vnic_intr_mask(struct vnic_intr *intr)
+{
+	iowrite32(1, &intr->ctrl->mask);
+}
+
+static inline void vnic_intr_return_credits(struct vnic_intr *intr,
+	unsigned int credits, int unmask, int reset_timer)
+{
+#define VNIC_INTR_UNMASK_SHIFT		16
+#define VNIC_INTR_RESET_TIMER_SHIFT	17
+
+	u32 int_credit_return = (credits & 0xffff) |
+		(unmask ? (1 << VNIC_INTR_UNMASK_SHIFT) : 0) |
+		(reset_timer ? (1 << VNIC_INTR_RESET_TIMER_SHIFT) : 0);
+
+	iowrite32(int_credit_return, &intr->ctrl->int_credit_return);
+}
+
+static inline u32 vnic_intr_legacy_pba(u32 __iomem *legacy_pba)
+{
+	/* read PBA without clearing */
+	return ioread32(legacy_pba);
+}
+
+void vnic_intr_free(struct vnic_intr *intr);
+int vnic_intr_alloc(struct vnic_dev *vdev, struct vnic_intr *intr,
+	unsigned int index);
+void vnic_intr_init(struct vnic_intr *intr, unsigned int coalescing_timer,
+	unsigned int coalescing_type, unsigned int mask_on_assertion);
+void vnic_intr_clean(struct vnic_intr *intr);
+
+#endif /* _VNIC_INTR_H_ */

@@ -1,0 +1,231 @@
+#!/usr/bin/perl
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+
+# Copyright 2008, Intel Corporation
+#
+# This file is part of the Linux kernel
+#
+# This program file is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program in a file named COPYING; if not, write to the
+# Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
+#
+# Authors:
+# 	Arjan van de Ven <arjan@linux.intel.com>
+
+
+#
+# This script turns a dmesg output into a SVG graphic that shows which
+# functions take how much time. You can view SVG graphics with various
+# programs, including Inkscape, The Gimp and Firefox.
+#
+#
+# For this script to work, the kernel needs to be compiled with the
+# CONFIG_PRINTK_TIME configuration option enabled, and with
+# "initcall_debug" passed on the kernel command line.
+#
+# usage:
+# 	dmesg | perl scripts/bootgraph.pl > output.svg
+#
+
+use strict;
+
+my %start;
+my %end;
+my %type;
+my $done = 0;
+my $maxtime = 0;
+my $firsttime = 100;
+my $count = 0;
+my %pids;
+my %pidctr;
+
+while (<>) {
+	my $line = $_;
+	if ($line =~ /([0-9\.]+)\] calling  ([a-zA-Z0-9\_\.]+)\+/) {
+		my $func = $2;
+		if ($done == 0) {
+			$start{$func} = $1;
+			$type{$func} = 0;
+			if ($1 < $firsttime) {
+				$firsttime = $1;
+			}
+		}
+		if ($line =~ /\@ ([0-9]+)/) {
+			$pids{$func} = $1;
+		}
+		$count = $count + 1;
+	}
+
+	if ($line =~ /([0-9\.]+)\] async_waiting @ ([0-9]+)/) {
+		my $pid = $2;
+		my $func;
+		if (!defined($pidctr{$pid})) {
+			$func = "wait_" . $pid . "_1";
+			$pidctr{$pid} = 1;
+		} else {
+			$pidctr{$pid} = $pidctr{$pid} + 1;
+			$func = "wait_" . $pid . "_" . $pidctr{$pid};
+		}
+		if ($done == 0) {
+			$start{$func} = $1;
+			$type{$func} = 1;
+			if ($1 < $firsttime) {
+				$firsttime = $1;
+			}
+		}
+		$pids{$func} = $pid;
+		$count = $count + 1;
+	}
+
+	if ($line =~ /([0-9\.]+)\] initcall ([a-zA-Z0-9\_\.]+)\+.*returned/) {
+		if ($done == 0) {
+			$end{$2} = $1;
+			$maxtime = $1;
+		}
+	}
+
+	if ($line =~ /([0-9\.]+)\] async_continuing @ ([0-9]+)/) {
+		my $pid = $2;
+		my $func =  "wait_" . $pid . "_" . $pidctr{$pid};
+		$end{$func} = $1;
+		$maxtime = $1;
+	}
+	if ($line =~ /Write protecting the/) {
+		$done = 1;
+	}
+	if ($line =~ /Freeing unused kernel memory/) {
+		$done = 1;
+	}
+}
+
+if ($count == 0) {
+    print STDERR <<END;
+No data found in the dmesg. Make sure that 'printk.time=1' and
+'initcall_debug' are passed on the kernel command line.
+Usage:
+      dmesg | perl scripts/bootgraph.pl > output.svg
+END
+    exit 1;
+}
+
+print "<?xml version=\"1.0\" standalone=\"no\"?> \n";
+print "<svg width=\"2000\" height=\"100%\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n";
+
+my @styles;
+
+$styles[0] = "fill:rgb(0,0,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[1] = "fill:rgb(0,255,0);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[2] = "fill:rgb(255,0,20);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[3] = "fill:rgb(255,255,20);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[4] = "fill:rgb(255,0,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[5] = "fill:rgb(0,255,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[6] = "fill:rgb(0,128,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[7] = "fill:rgb(0,255,128);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[8] = "fill:rgb(255,0,128);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[9] = "fill:rgb(255,255,128);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[10] = "fill:rgb(255,128,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+$styles[11] = "fill:rgb(128,255,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)";
+
+my $style_wait = "fill:rgb(128,128,128);fill-opacity:0.5;stroke-width:0;stroke:rgb(0,0,0)";
+
+my $mult = 1950.0 / ($maxtime - $firsttime);
+my $threshold2 = ($maxtime - $firsttime) / 120.0;
+my $threshold = $threshold2/10;
+my $stylecounter = 0;
+my %rows;
+my $rowscount = 1;
+my @initcalls = sort { $start{$a} <=> $start{$b} } keys(%start);
+
+foreach my $key (@initcalls) {
+	my $duration = $end{$key} - $start{$key};
+
+	if ($duration >= $threshold) {
+		my ($s, $s2, $s3, $e, $w, $y, $y2, $style);
+		my $pid = $pids{$key};
+
+		if (!defined($rows{$pid})) {
+			$rows{$pid} = $rowscount;
+			$rowscount = $rowscount + 1;
+		}
+		$s = ($start{$key} - $firsttime) * $mult;
+		$s2 = $s + 6;
+		$s3 = $s + 1;
+		$e = ($end{$key} - $firsttime) * $mult;
+		$w = $e - $s;
+
+		$y = $rows{$pid} * 150;
+		$y2 = $y + 4;
+
+		$style = $styles[$stylecounter];
+		$stylecounter = $stylecounter + 1;
+		if ($stylecounter > 11) {
+			$stylecounter = 0;
+		};
+
+		if ($type{$key} == 1) {
+			$y = $y + 15;
+			print "<rect x=\"$s\" width=\"$w\" y=\"$y\" height=\"115\" style=\"$style_wait\"/>\n";
+		} else {
+			print "<rect x=\"$s\" width=\"$w\" y=\"$y\" height=\"145\" style=\"$style\"/>\n";
+			if ($duration >= $threshold2) {
+				print "<text transform=\"translate($s2,$y2) rotate(90)\">$key</text>\n";
+			} else {
+				print "<text transform=\"translate($s3,$y2) rotate(90)\" font-size=\"3pt\">$key</text>\n";
+			}
+		}
+	}
+}
+
+
+# print the time line on top
+my $time = $firsttime;
+my $step = ($maxtime - $firsttime) / 15;
+while ($time < $maxtime) {
+	my $s3 = ($time - $firsttime) * $mult;
+	my $tm = int($time * 100) / 100.0;
+	print "<text transform=\"translate($s3,89) rotate(90)\">$tm</text>\n";
+	$time = $time + $step;
+}
+
+print "</svg>\n";

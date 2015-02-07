@@ -1,0 +1,83 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Makefile for the linux kernel.
+#
+
+# Common support
+obj-y := clock.o generic.o gpio.o irq.o dma.o time.o #nmi-oopser.o
+obj-m :=
+obj-n :=
+obj-  :=
+led-y := leds.o
+
+obj-$(CONFIG_CPU_FREQ_SA1100)		+= cpu-sa1100.o
+obj-$(CONFIG_CPU_FREQ_SA1110)		+= cpu-sa1110.o
+
+# Specific board support
+obj-$(CONFIG_SA1100_ASSABET)		+= assabet.o
+led-$(CONFIG_SA1100_ASSABET)		+= leds-assabet.o
+obj-$(CONFIG_ASSABET_NEPONSET)		+= neponset.o
+
+obj-$(CONFIG_SA1100_BADGE4)		+= badge4.o
+led-$(CONFIG_SA1100_BADGE4)		+= leds-badge4.o
+
+obj-$(CONFIG_SA1100_CERF)		+= cerf.o
+led-$(CONFIG_SA1100_CERF)		+= leds-cerf.o
+
+obj-$(CONFIG_SA1100_COLLIE)		+= collie.o
+
+obj-$(CONFIG_SA1100_H3600)		+= h3600.o
+
+obj-$(CONFIG_SA1100_HACKKIT)		+= hackkit.o
+led-$(CONFIG_SA1100_HACKKIT)		+= leds-hackkit.o
+
+obj-$(CONFIG_SA1100_JORNADA720)		+= jornada720.o
+obj-$(CONFIG_SA1100_JORNADA720_SSP)	+= jornada720_ssp.o
+
+obj-$(CONFIG_SA1100_LART)		+= lart.o
+led-$(CONFIG_SA1100_LART)		+= leds-lart.o
+
+obj-$(CONFIG_SA1100_PLEB)		+= pleb.o
+
+obj-$(CONFIG_SA1100_SHANNON)		+= shannon.o
+
+obj-$(CONFIG_SA1100_SIMPAD)		+= simpad.o
+led-$(CONFIG_SA1100_SIMPAD)		+= leds-simpad.o
+
+# LEDs support
+obj-$(CONFIG_LEDS) += $(led-y)
+
+# Miscelaneous functions
+obj-$(CONFIG_PM)			+= pm.o sleep.o
+obj-$(CONFIG_SA1100_SSP)		+= ssp.o
+

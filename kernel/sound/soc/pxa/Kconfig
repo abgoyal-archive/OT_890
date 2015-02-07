@@ -1,0 +1,130 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config SND_PXA2XX_SOC
+	tristate "SoC Audio for the Intel PXA2xx chip"
+	depends on ARCH_PXA
+	select SND_PXA2XX_LIB
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the PXA2xx AC97, I2S or SSP interface. You will also need
+	  to select the audio interfaces to support below.
+
+config SND_PXA2XX_AC97
+	tristate
+	select SND_AC97_CODEC
+
+config SND_PXA2XX_SOC_AC97
+	tristate
+	select AC97_BUS
+	select SND_ARM
+	select SND_PXA2XX_LIB_AC97
+	select SND_SOC_AC97_BUS
+
+config SND_PXA2XX_SOC_I2S
+	tristate
+
+config SND_PXA_SOC_SSP
+	tristate
+
+config SND_PXA2XX_SOC_CORGI
+	tristate "SoC Audio support for Sharp Zaurus SL-C7x0"
+	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8731
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-C7x0 models (Corgi, Shepherd, Husky).
+
+config SND_PXA2XX_SOC_SPITZ
+	tristate "SoC Audio support for Sharp Zaurus SL-Cxx00"
+	depends on SND_PXA2XX_SOC && PXA_SHARP_Cxx00
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8750
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-Cxx00 models (Spitz, Borzoi and Akita).
+
+config SND_PXA2XX_SOC_POODLE
+	tristate "SoC Audio support for Poodle"
+	depends on SND_PXA2XX_SOC && MACH_POODLE
+	select SND_PXA2XX_SOC_I2S
+	select SND_SOC_WM8731
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-5600 model (Poodle).
+
+config SND_PXA2XX_SOC_TOSA
+	tristate "SoC AC97 Audio support for Tosa"
+	depends on SND_PXA2XX_SOC && MACH_TOSA
+	depends on MFD_TC6393XB
+	select SND_PXA2XX_SOC_AC97
+	select SND_SOC_WM9712
+	help
+	  Say Y if you want to add support for SoC audio on Sharp
+	  Zaurus SL-C6000x models (Tosa).
+
+config SND_PXA2XX_SOC_E800
+	tristate "SoC AC97 Audio support for e800"
+	depends on SND_PXA2XX_SOC && MACH_E800
+	select SND_SOC_WM9712
+	select SND_PXA2XX_SOC_AC97
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  Toshiba e800 PDA
+
+config SND_PXA2XX_SOC_EM_X270
+	tristate "SoC Audio support for CompuLab EM-x270"
+	depends on SND_PXA2XX_SOC && MACH_EM_X270
+	select SND_PXA2XX_SOC_AC97
+	select SND_SOC_WM9712
+	help
+	  Say Y if you want to add support for SoC audio on
+	  CompuLab EM-x270.
+
+config SND_PXA2XX_SOC_PALM27X
+	bool "SoC Audio support for Palm T|X, T5 and LifeDrive"
+	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || MACH_PALMT5)
+	select SND_PXA2XX_SOC_AC97
+	select SND_SOC_WM9712
+	help
+	  Say Y if you want to add support for SoC audio on
+	  Palm T|X, T5 or LifeDrive handheld computer.
+
+config SND_SOC_ZYLONITE
+	tristate "SoC Audio support for Marvell Zylonite"
+	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
+	select SND_PXA2XX_SOC_AC97
+	select SND_PXA_SOC_SSP
+	select SND_SOC_WM9713
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  Marvell Zylonite reference platform.

@@ -1,0 +1,74 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config UFS_FS
+	tristate "UFS file system support (read only)"
+	depends on BLOCK
+	help
+	  BSD and derivate versions of Unix (such as SunOS, FreeBSD, NetBSD,
+	  OpenBSD and NeXTstep) use a file system called UFS. Some System V
+	  Unixes can create and mount hard disk partitions and diskettes using
+	  this file system as well. Saying Y here will allow you to read from
+	  these partitions; if you also want to write to them, say Y to the
+	  experimental "UFS file system write support", below. Please read the
+	  file <file:Documentation/filesystems/ufs.txt> for more information.
+
+          The recently released UFS2 variant (used in FreeBSD 5.x) is
+          READ-ONLY supported.
+
+	  Note that this option is generally not needed for floppies, since a
+	  good portable way to transport files and directories between unixes
+	  (and even other operating systems) is given by the tar program ("man
+	  tar" or preferably "info tar").
+
+	  When accessing NeXTstep files, you may need to convert them from the
+	  NeXT character set to the Latin1 character set; use the program
+	  recode ("info recode") for this purpose.
+
+	  To compile the UFS file system support as a module, choose M here: the
+	  module will be called ufs.
+
+	  If you haven't heard about all of this before, it's safe to say N.
+
+config UFS_FS_WRITE
+	bool "UFS file system write support (DANGEROUS)"
+	depends on UFS_FS && EXPERIMENTAL
+	help
+	  Say Y here if you want to try writing to UFS partitions. This is
+	  experimental, so you should back up your UFS partitions beforehand.
+
+config UFS_DEBUG
+	bool "UFS debugging"
+	depends on UFS_FS
+	help
+	  If you are experiencing any problems with the UFS filesystem, say
+	  Y here.  This will result in _many_ additional debugging messages to be
+	  written to the system log.

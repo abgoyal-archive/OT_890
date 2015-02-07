@@ -1,0 +1,103 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+menuconfig PPC_82xx
+	bool "82xx-based boards (PQ II)"
+	depends on 6xx && PPC_MULTIPLATFORM
+
+if PPC_82xx
+
+config MPC8272_ADS
+	bool "Freescale MPC8272 ADS"
+	select DEFAULT_UIMAGE
+	select PQ2ADS
+	select 8272
+	select 8260
+	select FSL_SOC
+	select PQ2_ADS_PCI_PIC if PCI
+	help
+	  This option enables support for the MPC8272 ADS board
+
+config PQ2FADS
+	bool "Freescale PQ2FADS"
+	select DEFAULT_UIMAGE
+	select PQ2ADS
+	select 8260
+	select FSL_SOC
+	select PQ2_ADS_PCI_PIC if PCI
+	help
+	  This option enables support for the PQ2FADS board
+
+config EP8248E
+	bool "Embedded Planet EP8248E (a.k.a. CWH-PPC-8248N-VE)"
+	select 8272
+	select 8260
+	select FSL_SOC
+	select PHYLIB
+	select MDIO_BITBANG
+	help
+	  This enables support for the Embedded Planet EP8248E board.
+
+	  This board is also resold by Freescale as the QUICCStart
+	  MPC8248 Evaluation System and/or the CWH-PPC-8248N-VE.
+
+config MGCOGE
+	bool "Keymile MGCOGE"
+	select 8272
+	select 8260
+	select FSL_SOC
+	help
+	  This enables support for the Keymile MGCOGE board.
+
+endif
+
+config PQ2ADS
+	bool
+	default n
+
+config 8260
+	bool
+	depends on 6xx
+	select CPM2
+	help
+	  The MPC8260 is a typical embedded CPU made by Freescale.  Selecting
+	  this option means that you wish to build a kernel for a machine with
+	  an 8260 class CPU.
+
+config 8272
+	bool
+	select 8260
+	help
+	  The MPC8272 CPM has a different internal dpram setup than other CPM2
+	  devices
+
+config PQ2_ADS_PCI_PIC
+	bool

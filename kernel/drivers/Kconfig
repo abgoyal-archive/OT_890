@@ -1,0 +1,156 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+#
+# The following software/firmware and/or related documentation ("MediaTek Software")
+# have been modified by MediaTek Inc. All revisions are subject to any receiver's
+# applicable license agreements with MediaTek Inc.
+
+
+# drivers/Kconfig
+
+menu "Device Drivers"
+
+source "drivers/base/Kconfig"
+
+source "drivers/connector/Kconfig"
+
+source "drivers/mtd/Kconfig"
+
+source "drivers/of/Kconfig"
+
+source "drivers/parport/Kconfig"
+
+source "drivers/pnp/Kconfig"
+
+source "drivers/block/Kconfig"
+
+# misc before ide - BLK_DEV_SGIIOC4 depends on SGI_IOC4
+
+source "drivers/misc/Kconfig"
+
+source "drivers/ide/Kconfig"
+
+source "drivers/scsi/Kconfig"
+
+source "drivers/ata/Kconfig"
+
+source "drivers/md/Kconfig"
+
+source "drivers/message/fusion/Kconfig"
+
+source "drivers/ieee1394/Kconfig"
+
+source "drivers/message/i2o/Kconfig"
+
+source "drivers/macintosh/Kconfig"
+
+source "drivers/net/Kconfig"
+
+source "drivers/isdn/Kconfig"
+
+source "drivers/telephony/Kconfig"
+
+# input before char - char/joystick depends on it. As does USB.
+
+source "drivers/input/Kconfig"
+
+source "drivers/char/Kconfig"
+
+source "drivers/i2c/Kconfig"
+
+source "drivers/spi/Kconfig"
+
+source "drivers/gpio/Kconfig"
+
+source "drivers/w1/Kconfig"
+
+source "drivers/power/Kconfig"
+
+source "drivers/hwmon/Kconfig"
+
+source "drivers/thermal/Kconfig"
+
+source "drivers/watchdog/Kconfig"
+
+source "drivers/ssb/Kconfig"
+
+source "drivers/mfd/Kconfig"
+
+source "drivers/regulator/Kconfig"
+
+source "drivers/media/Kconfig"
+
+source "drivers/video/Kconfig"
+
+source "sound/Kconfig"
+
+source "drivers/hid/Kconfig"
+
+source "drivers/usb/Kconfig"
+
+source "drivers/uwb/Kconfig"
+
+source "drivers/mmc/Kconfig"
+
+source "drivers/memstick/Kconfig"
+
+source "drivers/leds/Kconfig"
+
+source "drivers/switch/Kconfig"
+
+source "drivers/accessibility/Kconfig"
+
+source "drivers/infiniband/Kconfig"
+
+source "drivers/edac/Kconfig"
+
+source "drivers/rtc/Kconfig"
+
+source "drivers/dma/Kconfig"
+
+source "drivers/dca/Kconfig"
+
+source "drivers/auxdisplay/Kconfig"
+
+source "drivers/uio/Kconfig"
+
+source "drivers/xen/Kconfig"
+
+source "drivers/staging/Kconfig"
+
+source "drivers/platform/Kconfig"
+
+source "drivers/gps/Kconfig"
+
+source "drivers/spm/Kconfig"
+
+source "drivers/watchdog/wdk/Kconfig"
+
+endmenu

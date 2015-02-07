@@ -1,0 +1,91 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+menuconfig IP_DCCP
+	tristate "The DCCP Protocol (EXPERIMENTAL)"
+	depends on INET && EXPERIMENTAL
+	---help---
+	  Datagram Congestion Control Protocol (RFC 4340)
+
+	  From http://www.ietf.org/rfc/rfc4340.txt:
+
+	  The Datagram Congestion Control Protocol (DCCP) is a transport
+	  protocol that implements bidirectional, unicast connections of
+	  congestion-controlled, unreliable datagrams. It should be suitable
+	  for use by applications such as streaming media, Internet telephony,
+	  and on-line games.
+
+	  To compile this protocol support as a module, choose M here: the
+	  module will be called dccp.
+
+	  If in doubt, say N.
+
+if IP_DCCP
+
+config INET_DCCP_DIAG
+	depends on INET_DIAG
+	def_tristate y if (IP_DCCP = y && INET_DIAG = y)
+	def_tristate m
+
+source "net/dccp/ccids/Kconfig"
+
+menu "DCCP Kernel Hacking"
+	depends on DEBUG_KERNEL=y
+
+config IP_DCCP_DEBUG
+	bool "DCCP debug messages"
+	---help---
+	  Only use this if you're hacking DCCP.
+
+	  When compiling DCCP as a module, this debugging output can be toggled
+	  by setting the parameter dccp_debug of the `dccp' module to 0 or 1.
+
+	  Just say N.
+
+config NET_DCCPPROBE
+	tristate "DCCP connection probing"
+	depends on PROC_FS && KPROBES
+	---help---
+	This module allows for capturing the changes to DCCP connection
+	state in response to incoming packets. It is used for debugging
+	DCCP congestion avoidance modules. If you don't understand
+	what was just said, you don't need it: say N.
+
+	Documentation on how to use DCCP connection probing can be found
+	at http://linux-net.osdl.org/index.php/DccpProbe
+
+	To compile this code as a module, choose M here: the
+	module will be called dccp_probe.
+
+
+endmenu
+
+endif # IP_DDCP

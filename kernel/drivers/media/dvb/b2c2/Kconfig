@@ -1,0 +1,76 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config DVB_B2C2_FLEXCOP
+	tristate "Technisat/B2C2 FlexCopII(b) and FlexCopIII adapters"
+	depends on DVB_CORE && I2C
+	select DVB_PLL if !DVB_FE_CUSTOMISE
+	select DVB_STV0299 if !DVB_FE_CUSTOMISE
+	select DVB_MT352 if !DVB_FE_CUSTOMISE
+	select DVB_MT312 if !DVB_FE_CUSTOMISE
+	select DVB_NXT200X if !DVB_FE_CUSTOMISE
+	select DVB_STV0297 if !DVB_FE_CUSTOMISE
+	select DVB_BCM3510 if !DVB_FE_CUSTOMISE
+	select DVB_LGDT330X if !DVB_FE_CUSTOMISE
+	select DVB_S5H1420 if !DVB_FE_CUSTOMISE
+	select DVB_TUNER_ITD1000 if !DVB_FE_CUSTOMISE
+	select DVB_ISL6421 if !DVB_FE_CUSTOMISE
+	select DVB_CX24123 if !DVB_FE_CUSTOMISE
+	select MEDIA_TUNER_SIMPLE if !MEDIA_TUNER_CUSTOMIZE
+	select DVB_TUNER_CX24113 if !DVB_FE_CUSTOMISE
+	help
+	  Support for the digital TV receiver chip made by B2C2 Inc. included in
+	  Technisats PCI cards and USB boxes.
+
+	  Say Y if you own such a device and want to use it.
+
+config DVB_B2C2_FLEXCOP_PCI
+	tristate "Technisat/B2C2 Air/Sky/Cable2PC PCI"
+	depends on DVB_B2C2_FLEXCOP && PCI && I2C
+	help
+	  Support for the Air/Sky/CableStar2 PCI card (DVB/ATSC) by Technisat/B2C2.
+
+	  Say Y if you own such a device and want to use it.
+
+config DVB_B2C2_FLEXCOP_USB
+	tristate "Technisat/B2C2 Air/Sky/Cable2PC USB"
+	depends on DVB_B2C2_FLEXCOP && USB && I2C
+	help
+	  Support for the Air/Sky/Cable2PC USB1.1 box (DVB/ATSC) by Technisat/B2C2,
+
+	  Say Y if you own such a device and want to use it.
+
+config DVB_B2C2_FLEXCOP_DEBUG
+	bool "Enable debug for the B2C2 FlexCop drivers"
+	depends on DVB_B2C2_FLEXCOP
+	help
+	  Say Y if you want to enable the module option to control debug messages
+	  of all B2C2 FlexCop drivers.

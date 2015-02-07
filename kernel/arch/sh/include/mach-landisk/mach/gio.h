@@ -1,0 +1,68 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+#ifndef __ASM_SH_LANDISK_GIO_H
+#define __ASM_SH_LANDISK_GIO_H
+
+#include <linux/ioctl.h>
+
+/* version */
+#define VERSION_STR	"1.00"
+
+/* Driver name */
+#define GIO_DRIVER_NAME		"/dev/giodrv"
+
+/* Use 'k' as magic number */
+#define GIODRV_IOC_MAGIC  'k'
+
+#define GIODRV_IOCRESET    _IO(GIODRV_IOC_MAGIC, 0)
+/*
+ * S means "Set" through a ptr,
+ * T means "Tell" directly
+ * G means "Get" (to a pointed var)
+ * Q means "Query", response is on the return value
+ * X means "eXchange": G and S atomically
+ * H means "sHift": T and Q atomically
+ */
+#define GIODRV_IOCSGIODATA1   _IOW(GIODRV_IOC_MAGIC,  1, unsigned char *)
+#define GIODRV_IOCGGIODATA1   _IOR(GIODRV_IOC_MAGIC,  2, unsigned char *)
+#define GIODRV_IOCSGIODATA2   _IOW(GIODRV_IOC_MAGIC,  3, unsigned short *)
+#define GIODRV_IOCGGIODATA2   _IOR(GIODRV_IOC_MAGIC,  4, unsigned short *)
+#define GIODRV_IOCSGIODATA4   _IOW(GIODRV_IOC_MAGIC,  5, unsigned long *)
+#define GIODRV_IOCGGIODATA4   _IOR(GIODRV_IOC_MAGIC,  6, unsigned long *)
+#define GIODRV_IOCSGIOSETADDR _IOW(GIODRV_IOC_MAGIC,  7, unsigned long *)
+#define GIODRV_IOCHARDRESET   _IO(GIODRV_IOC_MAGIC, 8) /* debugging tool */
+#define GIODRV_IOC_MAXNR 8
+
+#define GIO_READ 0x00000000
+#define GIO_WRITE 0x00000001
+
+#endif /* __ASM_SH_LANDISK_GIO_H  */

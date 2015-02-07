@@ -1,0 +1,91 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# 1-wire slaves configuration
+#
+
+menu "1-wire Slaves"
+
+config W1_SLAVE_THERM
+	tristate "Thermal family implementation"
+	help
+	  Say Y here if you want to connect 1-wire thermal sensors to your
+	  wire.
+
+config W1_SLAVE_SMEM
+	tristate "Simple 64bit memory family implementation"
+	help
+	  Say Y here if you want to connect 1-wire
+	  simple 64bit memory rom(ds2401/ds2411/ds1990*) to your wire.
+
+config W1_SLAVE_DS2431
+	tristate "1kb EEPROM family support (DS2431)"
+	help
+	  Say Y here if you want to use a 1-wire
+	  1kb EEPROM family device (DS2431)
+
+config W1_SLAVE_DS2433
+	tristate "4kb EEPROM family support (DS2433)"
+	help
+	  Say Y here if you want to use a 1-wire
+	  4kb EEPROM family device (DS2433).
+
+config W1_SLAVE_DS2433_CRC
+	bool "Protect DS2433 data with a CRC16"
+	depends on W1_SLAVE_DS2433
+	select CRC16
+	help
+	  Say Y here to protect DS2433 data with a CRC16.
+	  Each block has 30 bytes of data and a two byte CRC16.
+	  Full block writes are only allowed if the CRC is valid.
+
+config W1_SLAVE_DS2760
+	tristate "Dallas 2760 battery monitor chip (HP iPAQ & others)"
+	depends on W1
+	help
+	  If you enable this you will have the DS2760 battery monitor
+	  chip support.
+
+	  The battery monitor chip is used in many batteries/devices
+	  as the one who is responsible for charging/discharging/monitoring
+	  Li+ batteries.
+
+	  If you are unsure, say N.
+
+config W1_SLAVE_BQ27000
+	tristate "BQ27000 slave support"
+	depends on W1
+	help
+	  Say Y here if you want to use a hdq
+	  bq27000 slave support.
+
+endmenu

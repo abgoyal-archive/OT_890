@@ -1,0 +1,75 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# Controller Area Network (CAN) network layer core configuration
+#
+
+menuconfig CAN
+	depends on NET
+	tristate "CAN bus subsystem support"
+	---help---
+	  Controller Area Network (CAN) is a slow (up to 1Mbit/s) serial
+	  communications protocol which was developed by Bosch in
+	  1991, mainly for automotive, but now widely used in marine
+	  (NMEA2000), industrial, and medical applications.
+	  More information on the CAN network protocol family PF_CAN
+	  is contained in <Documentation/networking/can.txt>.
+
+	  If you want CAN support you should say Y here and also to the
+	  specific driver for your controller(s) below.
+
+config CAN_RAW
+	tristate "Raw CAN Protocol (raw access with CAN-ID filtering)"
+	depends on CAN
+	default N
+	---help---
+	  The raw CAN protocol option offers access to the CAN bus via
+	  the BSD socket API. You probably want to use the raw socket in
+	  most cases where no higher level protocol is being used. The raw
+	  socket has several filter options e.g. ID masking / error frames.
+	  To receive/send raw CAN messages, use AF_CAN with protocol CAN_RAW.
+
+config CAN_BCM
+	tristate "Broadcast Manager CAN Protocol (with content filtering)"
+	depends on CAN
+	default N
+	---help---
+	  The Broadcast Manager offers content filtering, timeout monitoring,
+	  sending of RTR frames, and cyclic CAN messages without permanent user
+	  interaction. The BCM can be 'programmed' via the BSD socket API and
+	  informs you on demand e.g. only on content updates / timeouts.
+	  You probably want to use the bcm socket in most cases where cyclic
+	  CAN messages are used on the bus (e.g. in automotive environments).
+	  To use the Broadcast Manager, use AF_CAN with protocol CAN_BCM.
+
+
+source "drivers/net/can/Kconfig"

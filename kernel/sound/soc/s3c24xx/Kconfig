@@ -1,0 +1,82 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config SND_S3C24XX_SOC
+	tristate "SoC Audio for the Samsung S3C24XX chips"
+	depends on ARCH_S3C2410
+	help
+	  Say Y or M if you want to add support for codecs attached to
+	  the S3C24XX AC97, I2S or SSP interface. You will also need
+	  to select the audio interfaces to support below.
+
+config SND_S3C24XX_SOC_I2S
+	tristate
+
+config SND_S3C2412_SOC_I2S
+	tristate
+
+config SND_S3C2443_SOC_AC97
+	tristate
+	select AC97_BUS
+	select SND_SOC_AC97_BUS
+	
+config SND_S3C24XX_SOC_NEO1973_WM8753
+	tristate "SoC I2S Audio support for NEO1973 - WM8753"
+	depends on SND_S3C24XX_SOC && MACH_NEO1973_GTA01
+	select SND_S3C24XX_SOC_I2S
+	select SND_SOC_WM8753
+	help
+	  Say Y if you want to add support for SoC audio on smdk2440
+	  with the WM8753.
+
+config SND_S3C24XX_SOC_SMDK2443_WM9710
+	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
+	depends on SND_S3C24XX_SOC && MACH_SMDK2443
+	select SND_S3C2443_SOC_AC97
+	select SND_SOC_AC97_CODEC
+	help
+	  Say Y if you want to add support for SoC audio on smdk2443
+	  with the WM9710.
+
+config SND_S3C24XX_SOC_LN2440SBC_ALC650
+	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
+	depends on SND_S3C24XX_SOC
+	select SND_S3C2443_SOC_AC97
+	select SND_SOC_AC97_CODEC
+	help
+	  Say Y if you want to add support for SoC audio on ln2440sbc
+	  with the ALC650.
+
+config SND_S3C24XX_SOC_S3C24XX_UDA134X
+	tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
+       	depends on SND_S3C24XX_SOC
+       	select SND_S3C24XX_SOC_I2S
+       	select SND_SOC_UDA134X

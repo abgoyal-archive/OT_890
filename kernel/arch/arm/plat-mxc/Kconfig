@@ -1,0 +1,77 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+if ARCH_MXC
+
+menu "Freescale MXC Implementations"
+
+choice
+	prompt "MXC/iMX Base Type"
+	default ARCH_MX3
+
+config ARCH_MX1
+	bool "MX1-based"
+	select CPU_ARM920T
+	help
+	  This enables support for systems based on the Freescale i.MX1 family
+
+config ARCH_MX2
+	bool "MX2-based"
+	select CPU_ARM926T
+	help
+	  This enables support for systems based on the Freescale i.MX2 family
+
+config ARCH_MX3
+	bool "MX3-based"
+	select CPU_V6
+	help
+	  This enables support for systems based on the Freescale i.MX3 family
+
+endchoice
+
+source "arch/arm/mach-mx1/Kconfig"
+source "arch/arm/mach-mx2/Kconfig"
+source "arch/arm/mach-mx3/Kconfig"
+
+endmenu
+
+config MXC_IRQ_PRIOR
+	bool "Use IRQ priority"
+	depends on ARCH_MXC
+	help
+	  Select this if you want to use prioritized IRQ handling.
+	  This feature prevents higher priority ISR to be interrupted
+	  by lower priority IRQ even IRQF_DISABLED flag is not set.
+	  This may be useful in embedded applications, where are strong
+	  requirements for timing.
+	  Say N here, unless you have a specialized requirement.
+
+endif

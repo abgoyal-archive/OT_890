@@ -1,0 +1,91 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ *  Galileo/Marvell GT641xx IRQ definitions.
+ *
+ *  Copyright (C) 2007  Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+#ifndef _ASM_IRQ_GT641XX_H
+#define _ASM_IRQ_GT641XX_H
+
+#ifndef GT641XX_IRQ_BASE
+#define GT641XX_IRQ_BASE		8
+#endif
+
+#define GT641XX_MEMORY_OUT_OF_RANGE_IRQ		(GT641XX_IRQ_BASE + 1)
+#define GT641XX_DMA_OUT_OF_RANGE_IRQ		(GT641XX_IRQ_BASE + 2)
+#define GT641XX_CPU_ACCESS_OUT_OF_RANGE_IRQ	(GT641XX_IRQ_BASE + 3)
+#define GT641XX_DMA0_IRQ			(GT641XX_IRQ_BASE + 4)
+#define GT641XX_DMA1_IRQ			(GT641XX_IRQ_BASE + 5)
+#define GT641XX_DMA2_IRQ			(GT641XX_IRQ_BASE + 6)
+#define GT641XX_DMA3_IRQ			(GT641XX_IRQ_BASE + 7)
+#define GT641XX_TIMER0_IRQ			(GT641XX_IRQ_BASE + 8)
+#define GT641XX_TIMER1_IRQ			(GT641XX_IRQ_BASE + 9)
+#define GT641XX_TIMER2_IRQ			(GT641XX_IRQ_BASE + 10)
+#define GT641XX_TIMER3_IRQ			(GT641XX_IRQ_BASE + 11)
+#define GT641XX_PCI_0_MASTER_READ_ERROR_IRQ	(GT641XX_IRQ_BASE + 12)
+#define GT641XX_PCI_0_SLAVE_WRITE_ERROR_IRQ	(GT641XX_IRQ_BASE + 13)
+#define GT641XX_PCI_0_MASTER_WRITE_ERROR_IRQ	(GT641XX_IRQ_BASE + 14)
+#define GT641XX_PCI_0_SLAVE_READ_ERROR_IRQ	(GT641XX_IRQ_BASE + 15)
+#define GT641XX_PCI_0_ADDRESS_ERROR_IRQ		(GT641XX_IRQ_BASE + 16)
+#define GT641XX_MEMORY_ERROR_IRQ		(GT641XX_IRQ_BASE + 17)
+#define GT641XX_PCI_0_MASTER_ABORT_IRQ		(GT641XX_IRQ_BASE + 18)
+#define GT641XX_PCI_0_TARGET_ABORT_IRQ		(GT641XX_IRQ_BASE + 19)
+#define GT641XX_PCI_0_RETRY_TIMEOUT_IRQ		(GT641XX_IRQ_BASE + 20)
+#define GT641XX_CPU_INT0_IRQ			(GT641XX_IRQ_BASE + 21)
+#define GT641XX_CPU_INT1_IRQ			(GT641XX_IRQ_BASE + 22)
+#define GT641XX_CPU_INT2_IRQ			(GT641XX_IRQ_BASE + 23)
+#define GT641XX_CPU_INT3_IRQ			(GT641XX_IRQ_BASE + 24)
+#define GT641XX_CPU_INT4_IRQ			(GT641XX_IRQ_BASE + 25)
+#define GT641XX_PCI_INT0_IRQ			(GT641XX_IRQ_BASE + 26)
+#define GT641XX_PCI_INT1_IRQ			(GT641XX_IRQ_BASE + 27)
+#define GT641XX_PCI_INT2_IRQ			(GT641XX_IRQ_BASE + 28)
+#define GT641XX_PCI_INT3_IRQ			(GT641XX_IRQ_BASE + 29)
+
+extern void gt641xx_irq_dispatch(void);
+extern void gt641xx_irq_init(void);
+
+#endif /* _ASM_IRQ_GT641XX_H */

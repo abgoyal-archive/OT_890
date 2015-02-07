@@ -1,0 +1,105 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+if ARCH_LH7A40X
+
+menu "LH7A40X Implementations"
+
+config MACH_KEV7A400
+	bool "KEV7A400"
+	select ARCH_LH7A400
+	help
+	  Say Y here if you are using the Sharp KEV7A400 development
+	  board.  This hardware is discontinued, so I'd be very
+	  surprised if you wanted this option.
+
+config MACH_LPD7A400
+	bool "LPD7A400 Card Engine"
+	select ARCH_LH7A400
+#	select IDE_POLL
+#	select HAS_TOUCHSCREEN_ADS7843_LH7
+	help
+	  Say Y here if you are using Logic Product Development's
+	  LPD7A400 CardEngine.  For the time being, the LPD7A400 and
+	  LPD7A404 options are mutually exclusive.
+
+config MACH_LPD7A404
+	bool "LPD7A404 Card Engine"
+	select ARCH_LH7A404
+#	select IDE_POLL
+#	select HAS_TOUCHSCREEN_ADC_LH7
+	help
+	  Say Y here if you are using Logic Product Development's
+	  LPD7A404 CardEngine. For the time being, the LPD7A400 and
+	  LPD7A404 options are mutually exclusive.
+
+config ARCH_LH7A400
+	bool
+
+config ARCH_LH7A404
+	bool
+
+config LPD7A40X_CPLD_SSP
+	bool
+
+config LH7A40X_CONTIGMEM
+	bool "Disable NUMA/SparseMEM Support"
+	help
+	  Say Y here if your bootloader sets the SROMLL bit(s) in
+	  the SDRAM controller, organizing memory as a contiguous
+	  array.  This option will disable sparse memory support
+          and force the kernel to manage all memory in one node.
+
+	  Setting this option incorrectly may prevent the kernel
+	  from booting.  It is OK to leave it N.
+
+	  For more information, consult
+	    <file:Documentation/arm/Sharp-LH/SDRAM>.
+
+config LH7A40X_ONE_BANK_PER_NODE
+	bool "Optimize NUMA Node Tables for Size"
+	depends on !LH7A40X_CONTIGMEM
+	help
+	  Say Y here to produce compact memory node tables.  By
+	  default pairs of adjacent physical RAM banks are managed
+	  together in a single node, incurring some wasted overhead
+	  in the node tables, however also maintaining compatibility
+	  with systems where physical memory is truly contiguous.
+
+	  Setting this option incorrectly may prevent the kernel from
+	  booting.  It is OK to leave it N.
+
+	  For more information, consult
+	    <file:Documentation/arm/Sharp-LH/SDRAM>.
+
+endmenu
+
+endif

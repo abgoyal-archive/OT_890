@@ -1,0 +1,73 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/* arch/arm/mach-s3c2410/include/mach/osiris-map.h
+ *
+ * (c) 2005 Simtec Electronics
+ *	http://www.simtec.co.uk/products/
+ *	Ben Dooks <ben@simtec.co.uk>
+ *
+ * OSIRIS - Memory map definitions
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+*/
+
+/* needs arch/map.h including with this */
+
+#ifndef __ASM_ARCH_OSIRISMAP_H
+#define __ASM_ARCH_OSIRISMAP_H
+
+/* start peripherals off after the S3C2410 */
+
+#define OSIRIS_IOADDR(x)	(S3C2410_ADDR((x) + 0x04000000))
+
+#define OSIRIS_PA_CPLD		(S3C2410_CS1 | (1<<26))
+
+/* we put the CPLD registers next, to get them out of the way */
+
+#define OSIRIS_VA_CTRL0		OSIRIS_IOADDR(0x00000000)
+#define OSIRIS_PA_CTRL0		(OSIRIS_PA_CPLD)
+
+#define OSIRIS_VA_CTRL1		OSIRIS_IOADDR(0x00100000)
+#define OSIRIS_PA_CTRL1		(OSIRIS_PA_CPLD + (1<<23))
+
+#define OSIRIS_VA_CTRL2		OSIRIS_IOADDR(0x00200000)
+#define OSIRIS_PA_CTRL2		(OSIRIS_PA_CPLD + (2<<23))
+
+#define OSIRIS_VA_CTRL3		OSIRIS_IOADDR(0x00300000)
+#define OSIRIS_PA_CTRL3		(OSIRIS_PA_CPLD + (2<<23))
+
+#define OSIRIS_VA_IDREG		OSIRIS_IOADDR(0x00700000)
+#define OSIRIS_PA_IDREG		(OSIRIS_PA_CPLD + (7<<23))
+
+#endif /* __ASM_ARCH_OSIRISMAP_H */

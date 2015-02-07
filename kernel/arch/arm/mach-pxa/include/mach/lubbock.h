@@ -1,0 +1,71 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ *  arch/arm/mach-pxa/include/mach/lubbock.h
+ *
+ *  Author:	Nicolas Pitre
+ *  Created:	Jun 15, 2001
+ *  Copyright:	MontaVista Software Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+#define LUBBOCK_ETH_PHYS	PXA_CS3_PHYS
+
+#define LUBBOCK_FPGA_PHYS	PXA_CS2_PHYS
+#define LUBBOCK_FPGA_VIRT	(0xf0000000)
+#define LUB_P2V(x)		((x) - LUBBOCK_FPGA_PHYS + LUBBOCK_FPGA_VIRT)
+#define LUB_V2P(x)		((x) - LUBBOCK_FPGA_VIRT + LUBBOCK_FPGA_PHYS)
+
+#ifndef __ASSEMBLY__
+#  define __LUB_REG(x)		(*((volatile unsigned long *)LUB_P2V(x)))
+#else
+#  define __LUB_REG(x)		LUB_P2V(x)
+#endif
+
+/* FPGA register virtual addresses */
+#define LUB_WHOAMI		__LUB_REG(LUBBOCK_FPGA_PHYS + 0x000)
+#define LUB_HEXLED		__LUB_REG(LUBBOCK_FPGA_PHYS + 0x010)
+#define LUB_DISC_BLNK_LED	__LUB_REG(LUBBOCK_FPGA_PHYS + 0x040)
+#define LUB_CONF_SWITCHES	__LUB_REG(LUBBOCK_FPGA_PHYS + 0x050)
+#define LUB_USER_SWITCHES	__LUB_REG(LUBBOCK_FPGA_PHYS + 0x060)
+#define LUB_MISC_WR		__LUB_REG(LUBBOCK_FPGA_PHYS + 0x080)
+#define LUB_MISC_RD		__LUB_REG(LUBBOCK_FPGA_PHYS + 0x090)
+#define LUB_IRQ_MASK_EN		__LUB_REG(LUBBOCK_FPGA_PHYS + 0x0c0)
+#define LUB_IRQ_SET_CLR		__LUB_REG(LUBBOCK_FPGA_PHYS + 0x0d0)
+#define LUB_GP			__LUB_REG(LUBBOCK_FPGA_PHYS + 0x100)
+
+#ifndef __ASSEMBLY__
+extern void lubbock_set_misc_wr(unsigned int mask, unsigned int set);
+#endif

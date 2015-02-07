@@ -1,0 +1,92 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# TPM device configuration
+#
+
+menuconfig TCG_TPM
+	tristate "TPM Hardware Support"
+	depends on HAS_IOMEM
+	depends on EXPERIMENTAL
+	select SECURITYFS
+	---help---
+	  If you have a TPM security chip in your system, which
+	  implements the Trusted Computing Group's specification,
+	  say Yes and it will be accessible from within Linux.  For
+	  more information see <http://www.trustedcomputinggroup.org>. 
+	  An implementation of the Trusted Software Stack (TSS), the 
+	  userspace enablement piece of the specification, can be 
+	  obtained at: <http://sourceforge.net/projects/trousers>.  To 
+	  compile this driver as a module, choose M here; the module 
+	  will be called tpm. If unsure, say N.
+	  Note: For more TPM drivers enable CONFIG_PNP, CONFIG_ACPI
+	  and CONFIG_PNPACPI.
+
+if TCG_TPM
+
+config TCG_TIS
+	tristate "TPM Interface Specification 1.2 Interface"
+	depends on PNP
+	---help---
+	  If you have a TPM security chip that is compliant with the
+	  TCG TIS 1.2 TPM specification say Yes and it will be accessible
+	  from within Linux.  To compile this driver as a module, choose
+	  M here; the module will be called tpm_tis.
+
+config TCG_NSC
+	tristate "National Semiconductor TPM Interface"
+	---help---
+	  If you have a TPM security chip from National Semiconductor 
+	  say Yes and it will be accessible from within Linux.  To 
+	  compile this driver as a module, choose M here; the module 
+	  will be called tpm_nsc.
+
+config TCG_ATMEL
+	tristate "Atmel TPM Interface"
+	---help---
+	  If you have a TPM security chip from Atmel say Yes and it 
+	  will be accessible from within Linux.  To compile this driver 
+	  as a module, choose M here; the module will be called tpm_atmel.
+
+config TCG_INFINEON
+	tristate "Infineon Technologies TPM Interface"
+	depends on PNP
+	---help---
+	  If you have a TPM security chip from Infineon Technologies
+	  (either SLD 9630 TT 1.1 or SLB 9635 TT 1.2) say Yes and it
+	  will be accessible from within Linux.
+	  To compile this driver as a module, choose M here; the module
+	  will be called tpm_infineon.
+	  Further information on this driver and the supported hardware
+	  can be found at http://www.prosec.rub.de/tpm
+
+endif # TCG_TPM

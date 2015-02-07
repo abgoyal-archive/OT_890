@@ -1,0 +1,70 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+config ISO9660_FS
+	tristate "ISO 9660 CDROM file system support"
+	help
+	  This is the standard file system used on CD-ROMs.  It was previously
+	  known as "High Sierra File System" and is called "hsfs" on other
+	  Unix systems.  The so-called Rock-Ridge extensions which allow for
+	  long Unix filenames and symbolic links are also supported by this
+	  driver.  If you have a CD-ROM drive and want to do more with it than
+	  just listen to audio CDs and watch its LEDs, say Y (and read
+	  <file:Documentation/filesystems/isofs.txt> and the CD-ROM-HOWTO,
+	  available from <http://www.tldp.org/docs.html#howto>), thereby
+	  enlarging your kernel by about 27 KB; otherwise say N.
+
+	  To compile this file system support as a module, choose M here: the
+	  module will be called isofs.
+
+config JOLIET
+	bool "Microsoft Joliet CDROM extensions"
+	depends on ISO9660_FS
+	select NLS
+	help
+	  Joliet is a Microsoft extension for the ISO 9660 CD-ROM file system
+	  which allows for long filenames in unicode format (unicode is the
+	  new 16 bit character code, successor to ASCII, which encodes the
+	  characters of almost all languages of the world; see
+	  <http://www.unicode.org/> for more information).  Say Y here if you
+	  want to be able to read Joliet CD-ROMs under Linux.
+
+config ZISOFS
+	bool "Transparent decompression extension"
+	depends on ISO9660_FS
+	select ZLIB_INFLATE
+	help
+	  This is a Linux-specific extension to RockRidge which lets you store
+	  data in compressed form on a CD-ROM and have it transparently
+	  decompressed when the CD-ROM is accessed.  See
+	  <http://www.kernel.org/pub/linux/utils/fs/zisofs/> for the tools
+	  necessary to create such a filesystem.  Say Y here if you want to be
+	  able to read such compressed CD-ROMs.

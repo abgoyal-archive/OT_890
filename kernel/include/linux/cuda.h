@@ -1,0 +1,67 @@
+/* Copyright Statement:
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
+/* MediaTek Inc. (C) 2010. All rights reserved.
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+/*
+ * Definitions for talking to the CUDA.  The CUDA is a microcontroller
+ * which controls the ADB, system power, RTC, and various other things.
+ *
+ * Copyright (C) 1996 Paul Mackerras.
+ */
+
+/* CUDA commands (2nd byte) */
+#define CUDA_WARM_START		0
+#define CUDA_AUTOPOLL		1
+#define CUDA_GET_6805_ADDR	2
+#define CUDA_GET_TIME		3
+#define CUDA_GET_PRAM		7
+#define CUDA_SET_6805_ADDR	8
+#define CUDA_SET_TIME		9
+#define CUDA_POWERDOWN		0xa
+#define CUDA_POWERUP_TIME	0xb
+#define CUDA_SET_PRAM		0xc
+#define CUDA_MS_RESET		0xd
+#define CUDA_SEND_DFAC		0xe
+#define CUDA_RESET_SYSTEM	0x11
+#define CUDA_SET_IPL		0x12
+#define CUDA_SET_AUTO_RATE	0x14
+#define CUDA_GET_AUTO_RATE	0x16
+#define CUDA_SET_DEVICE_LIST	0x19
+#define CUDA_GET_DEVICE_LIST	0x1a
+#define CUDA_GET_SET_IIC	0x22
+
+#ifdef __KERNEL__
+
+extern int find_via_cuda(void);
+extern int cuda_request(struct adb_request *req,
+			void (*done)(struct adb_request *), int nbytes, ...);
+extern void cuda_poll(void);
+
+#endif	/* __KERNEL */

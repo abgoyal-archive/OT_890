@@ -1,0 +1,147 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+menuconfig PPC_83xx
+	bool "83xx-based boards"
+	depends on 6xx && PPC_MULTIPLATFORM
+	select PPC_UDBG_16550
+	select PPC_PCI_CHOICE
+	select FSL_PCI if PCI
+	select FSL_SOC
+	select IPIC
+
+if PPC_83xx
+
+config MPC831x_RDB
+	bool "Freescale MPC831x RDB"
+	select DEFAULT_UIMAGE
+	select PPC_MPC831x
+	help
+	  This option enables support for the MPC8313 RDB and MPC8315 RDB boards.
+
+config MPC832x_MDS
+	bool "Freescale MPC832x MDS"
+	select DEFAULT_UIMAGE
+	select PPC_MPC832x
+	help
+	  This option enables support for the MPC832x MDS evaluation board.
+
+config MPC832x_RDB
+	bool "Freescale MPC832x RDB"
+	select DEFAULT_UIMAGE
+	select PPC_MPC832x
+	help
+	  This option enables support for the MPC8323 RDB board.
+
+config MPC834x_MDS
+	bool "Freescale MPC834x MDS"
+	select DEFAULT_UIMAGE
+	select PPC_MPC834x
+	help
+	  This option enables support for the MPC 834x MDS evaluation board.
+
+	  Be aware that PCI buses can only function when MDS board is plugged
+	  into the PIB (Platform IO Board) board from Freescale which provide
+	  3 PCI slots.  The PIBs PCI initialization is the bootloader's
+	  responsibility.
+
+config MPC834x_ITX
+	bool "Freescale MPC834x ITX"
+	select DEFAULT_UIMAGE
+	select PPC_MPC834x
+	help
+	  This option enables support for the MPC 834x ITX evaluation board.
+
+	  Be aware that PCI initialization is the bootloader's
+	  responsibility.
+
+config MPC836x_MDS
+	bool "Freescale MPC836x MDS"
+	select DEFAULT_UIMAGE
+	help
+	  This option enables support for the MPC836x MDS Processor Board.
+
+config MPC836x_RDK
+	bool "Freescale/Logic MPC836x RDK"
+	select DEFAULT_UIMAGE
+	select FSL_GTM
+	select FSL_LBC
+	help
+	  This option enables support for the MPC836x RDK Processor Board,
+	  also known as ZOOM PowerQUICC Kit.
+
+config MPC837x_MDS
+	bool "Freescale MPC837x MDS"
+	select DEFAULT_UIMAGE
+	select PPC_MPC837x
+	help
+	  This option enables support for the MPC837x MDS Processor Board.
+
+config MPC837x_RDB
+	bool "Freescale MPC837x RDB"
+	select DEFAULT_UIMAGE
+	select PPC_MPC837x
+	help
+	  This option enables support for the MPC837x RDB Board.
+
+config SBC834x
+	bool "Wind River SBC834x"
+	select DEFAULT_UIMAGE
+	select PPC_MPC834x
+	help
+	  This option enables support for the Wind River SBC834x board.
+
+config ASP834x
+	bool "Analogue & Micro ASP 834x"
+	select PPC_MPC834x
+	select REDBOOT
+	help
+	  This enables support for the Analogue & Micro ASP 83xx
+	  board.
+
+
+endif
+
+# used for usb
+config PPC_MPC831x
+	bool
+
+# used for math-emu
+config PPC_MPC832x
+	bool
+
+# used for usb
+config PPC_MPC834x
+	bool
+
+# used for usb
+config PPC_MPC837x
+	bool

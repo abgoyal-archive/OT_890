@@ -1,0 +1,115 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+comment "USB Input Devices"
+	depends on USB
+
+config USB_HID
+	tristate "USB Human Interface Device (full HID) support"
+	default y
+	depends on USB && INPUT
+	select HID
+	---help---
+	  Say Y here if you want full HID support to connect USB keyboards,
+	  mice, joysticks, graphic tablets, or any other HID based devices
+	  to your computer via USB, as well as Uninterruptible Power Supply
+	  (UPS) and monitor control devices.
+
+	  You can't use this driver and the HIDBP (Boot Protocol) keyboard
+	  and mouse drivers at the same time. More information is available:
+	  <file:Documentation/input/input.txt>.
+
+	  If unsure, say Y.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called usbhid.
+
+comment "Input core support is needed for USB HID input layer or HIDBP support"
+	depends on USB_HID && INPUT=n
+
+config HID_PID
+	bool "PID device support"
+	help
+	  Say Y here if you have a PID-compliant device and wish to enable force
+	  feedback for it. Microsoft Sidewinder Force Feedback 2 is one of such
+	  devices.
+
+config USB_HIDDEV
+	bool "/dev/hiddev raw HID device support"
+	depends on USB_HID
+	help
+	  Say Y here if you want to support HID devices (from the USB
+	  specification standpoint) that aren't strictly user interface
+	  devices, like monitor controls and Uninterruptable Power Supplies.
+
+	  This module supports these devices separately using a separate
+	  event interface on /dev/usb/hiddevX (char 180:96 to 180:111).
+
+	  If unsure, say Y.
+
+menu "USB HID Boot Protocol drivers"
+	depends on USB!=n && USB_HID!=y && EMBEDDED
+
+config USB_KBD
+	tristate "USB HIDBP Keyboard (simple Boot) support"
+	depends on USB && INPUT
+	---help---
+	  Say Y here only if you are absolutely sure that you don't want
+	  to use the generic HID driver for your USB keyboard and prefer
+	  to use the keyboard in its limited Boot Protocol mode instead.
+
+	  This is almost certainly not what you want.  This is mostly
+	  useful for embedded applications or simple keyboards.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called usbkbd.
+
+	  If even remotely unsure, say N.
+
+config USB_MOUSE
+	tristate "USB HIDBP Mouse (simple Boot) support"
+	depends on USB && INPUT
+	---help---
+	  Say Y here only if you are absolutely sure that you don't want
+	  to use the generic HID driver for your USB mouse and prefer
+	  to use the mouse in its limited Boot Protocol mode instead.
+
+	  This is almost certainly not what you want.  This is mostly
+	  useful for embedded applications or simple mice.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called usbmouse.
+
+	  If even remotely unsure, say N.
+
+endmenu
+
+

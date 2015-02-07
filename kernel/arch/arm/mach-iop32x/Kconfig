@@ -1,0 +1,77 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+if ARCH_IOP32X
+
+menu "IOP32x Implementation Options"
+
+comment "IOP32x Platform Types"
+
+config MACH_EP80219
+	bool
+
+config MACH_GLANTANK
+	bool "Enable support for the IO-Data GLAN Tank"
+	help
+	  Say Y here if you want to run your kernel on the GLAN Tank
+	  NAS appliance or machines from IO-Data's HDL-Gxxx, HDL-GWxxx
+	  and HDL-GZxxx series.
+
+config ARCH_IQ80321
+	bool "Enable support for IQ80321"
+	help
+	  Say Y here if you want to run your kernel on the Intel IQ80321
+	  evaluation kit for the IOP321 processor.
+
+config ARCH_IQ31244
+	bool "Enable support for EP80219/IQ31244"
+	select MACH_EP80219
+	help
+	  Say Y here if you want to run your kernel on the Intel EP80219
+	  evaluation kit for the Intel 80219 processor (a IOP321 variant)
+	  or the IQ31244 evaluation kit for the IOP321 processor.
+
+config MACH_N2100
+	bool "Enable support for the Thecus n2100"
+	help
+	  Say Y here if you want to run your kernel on the Thecus n2100
+	  NAS appliance.
+
+config MACH_EM7210
+	bool "Enable support for the Lanner EM7210"
+	help
+	  Say Y here if you want to run your kernel on the Lanner EM7210
+	  board. Say also Y here if you have a SS4000e Baxter Creek NAS
+	  appliance."
+
+endmenu
+
+endif

@@ -1,0 +1,79 @@
+# Copyright Statement:
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. and/or its licensors.
+# Without the prior written permission of MediaTek inc. and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+
+# MediaTek Inc. (C) 2010. All rights reserved.
+#
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+# RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+# AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+
+
+#
+# PCI Express Port Bus Configuration
+#
+config PCIEPORTBUS
+	bool "PCI Express support"
+	depends on PCI
+	help
+	  This automatically enables PCI Express Port Bus support. Users can
+	  choose Native Hot-Plug support, Advanced Error Reporting support,
+	  Power Management Event support and Virtual Channel support to run
+	  on PCI Express Ports (Root or Switch).
+
+#
+# Include service Kconfig here
+#
+config HOTPLUG_PCI_PCIE
+	tristate "PCI Express Hotplug driver"
+	depends on HOTPLUG_PCI && PCIEPORTBUS
+	help
+	  Say Y here if you have a motherboard that supports PCI Express Native
+	  Hotplug
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called pciehp.
+
+	  When in doubt, say N.
+
+source "drivers/pci/pcie/aer/Kconfig"
+
+#
+# PCI Express ASPM
+#
+config PCIEASPM
+	bool "PCI Express ASPM support(Experimental)"
+	depends on PCI && EXPERIMENTAL && PCIEPORTBUS
+	default n
+	help
+	  This enables PCI Express ASPM (Active State Power Management) and
+	  Clock Power Management. ASPM supports state L0/L0s/L1.
+
+	  When in doubt, say N.
+config PCIEASPM_DEBUG
+	bool "Debug PCI Express ASPM"
+	depends on PCIEASPM
+	default n
+	help
+	  This enables PCI Express ASPM debug support. It will add per-device
+	  interface to control ASPM.
